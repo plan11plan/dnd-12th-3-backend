@@ -34,7 +34,7 @@ jobs:
 
 #        아래는 빌드된 파일을 EC2에 보냄
       - name: SCP로 EC2에 빌드된 파일 전송하기
-        uses: appleboy/scp-action@vo0.1.7
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
