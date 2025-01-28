@@ -41,7 +41,7 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           source: project.jar
 #          아래는 EC2에 저장경로 지정하는 코드, 바뀔 프로젝트는 toBe 폴더에 넣어놓기
-          target: /home/ubuntu/instagram-server/tobe
+          target: /home/ubuntu/dnd-12th-3-backend/tobe
 
       - name: SSH(원격 접속)로 EC2에 접속하기
         uses: appleboy/ssh-action@v1.0.3
@@ -51,18 +51,13 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script_stop: true
           script: |
-#            현재 실행중인 서버 프로젝트는 current폴더에 넣어놓기
-            rm -rf /home/ubuntu/instagram-server/current
-            mkdir /home/ubuntu/instagram-server/current
-            mv /home/ubuntu/instagram-server/tobe/project.jar /home/ubuntu/instagram-server/current/project.jar
-            cd /home/ubuntu/instagram-server/current
-#            실행됐던 서버 끄기
+            rm -rf /home/ubuntu/dnd-12th-3-backend/current
+            mkdir /home/ubuntu/dnd-12th-3-backend/current
+            mv /home/ubuntu/dnd-12th-3-backend/tobe/project.jar /home/ubuntu/dnd-12th-3-backend/current/project.jar
+            cd /home/ubuntu/dnd-12th-3-backend/current
             sudo fuser -k -n tcp 8080 || true
-#            jar파일 실행하기
-            nohup java -jar project.jar > ./output.log 2>&1 &        
-#            기존에 만들었던 tobe 파일 삭제하기
-                    
-            rm -rf /home/ubuntu/instagram-server/tobe
+            nohup java -jar project.jar > ./output.log 2>&1 &                            
+            rm -rf /home/ubuntu/dnd-12th-3-backend/tobe
 
 
 
