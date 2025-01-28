@@ -1,4 +1,8 @@
 spring:
+# 만약 active: mysql이 작동안하면(주석이면) h2 메모리db사용됨
+#  profiles:
+#    active: mysql
+
   # 기본 데이터소스 설정 (H2 인메모리 DB)
   datasource:
     driver-class-name: org.h2.Driver
