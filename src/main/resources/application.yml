@@ -1,22 +1,33 @@
+# 글로벌 기본 설정
 spring:
-# 만약 active: mysql이 작동안하면(주석이면) h2 메모리db사용됨
-#  profiles:
-#    active: mysql
+  application:
+    name: dnd-12th-3-backend
+  # 기본 활성 프로파일을 dev로 지정 (변경 가능)
+  profiles:
+    active: dev
+  # 추가 공통 설정이 있으면 여기에 기술할 수 있음 (9조 레포 참고)
+  # config:
+  #   import:
+  #     - "core.yml"
 
-  # 기본 데이터소스 설정 (H2 인메모리 DB)
+---
+# dev 프로파일 전용 설정 (H2 인메모리 DB 사용)
+spring.config.activate.on-profile: dev
+
+server:
+  servlet:
+    context-path: /dev
+
+spring:
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:testdb;MODE=MySQL
     username: sa
     password:
-
-  # H2 콘솔 활성화
   h2:
     console:
       enabled: true
       path: /h2-console
-
-  # JPA 설정
   jpa:
     hibernate:
       ddl-auto: update
@@ -26,16 +37,18 @@ spring:
         format_sql: true
     database-platform: org.hibernate.dialect.H2Dialect
 
-# MySQL 설정은 프로필로 분리
 ---
+# prod 프로파일 전용 설정 (MySQL 사용)
+spring.config.activate.on-profile: prod
+server:
+  servlet:
+    context-path: /prod
+
 spring:
-  config:
-    activate:
-      on-profile: mysql
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/dnd_db
-    username: dnd
+    username: sa
     password:
   jpa:
     properties:
