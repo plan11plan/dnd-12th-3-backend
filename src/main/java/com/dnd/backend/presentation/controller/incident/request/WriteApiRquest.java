@@ -1,4 +1,4 @@
 package com.dnd.backend.presentation.controller.incident.request;
 
-public class CreateIncidentRequest {
+public class WriteApiRquest {
 }
