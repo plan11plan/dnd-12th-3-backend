@@ -5,10 +5,9 @@ spring:
   # 기본 활성 프로파일을 dev로 지정 (변경 가능)
   profiles:
     active: dev
-  # 추가 공통 설정이 있으면 여기에 기술할 수 있음 (9조 레포 참고)
-  # config:
-  #   import:
-  #     - "core.yml"
+  config:
+    import:
+      - "application-s3.yml"
 
 ---
 # dev 프로파일 전용 설정 (H2 인메모리 DB 사용)

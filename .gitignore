@@ -38,3 +38,4 @@ out/
 
 ### application ###
 application.yml
+application-s3.yml
