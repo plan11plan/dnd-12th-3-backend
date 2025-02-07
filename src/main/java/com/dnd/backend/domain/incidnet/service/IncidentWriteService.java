@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class IncidentWriteService {
 	private final JpaIncidentRepository incidentCommandRepository;
 
-	public IncidentEntity create(WriteIncidentCommand command) {
+	public Long create(WriteIncidentCommand command) {
 		DisasterGroup disasterGroup = mapToDisasterGroup(command.disasterGroup());
 
 		var incidentEntity = IncidentEntity.builder()
@@ -28,6 +28,6 @@ public class IncidentWriteService {
 			.pointY(command.pointY())
 			.build();
 
-		return incidentCommandRepository.save(incidentEntity);
+		return incidentCommandRepository.save(incidentEntity).getId();
 	}
 }
