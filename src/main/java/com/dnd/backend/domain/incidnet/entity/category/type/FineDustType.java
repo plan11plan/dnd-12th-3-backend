@@ -19,6 +19,6 @@ public enum FineDustType implements DisasterType {
 
 	@Override
 	public DisasterGroup getParentType() {
-		return DisasterGroup.FINE_DUST;
+		return DisasterGroup.미세먼지;
 	}
 }

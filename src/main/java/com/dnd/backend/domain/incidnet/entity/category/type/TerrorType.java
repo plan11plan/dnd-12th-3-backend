@@ -20,6 +20,6 @@ public enum TerrorType implements DisasterType {
 
 	@Override
 	public DisasterGroup getParentType() {
-		return DisasterGroup.TERROR;
+		return DisasterGroup.테러;
 	}
 }

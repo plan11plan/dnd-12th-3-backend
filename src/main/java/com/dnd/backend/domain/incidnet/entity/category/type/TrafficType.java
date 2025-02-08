@@ -20,6 +20,6 @@ public enum TrafficType implements DisasterType {
 
 	@Override
 	public DisasterGroup getParentType() {
-		return DisasterGroup.TRAFFIC;
+		return DisasterGroup.교통;
 	}
 }

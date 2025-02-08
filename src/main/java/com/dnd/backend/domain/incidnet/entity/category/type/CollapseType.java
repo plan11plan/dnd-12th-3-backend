@@ -19,6 +19,6 @@ public enum CollapseType implements DisasterType {
 
 	@Override
 	public DisasterGroup getParentType() {
-		return DisasterGroup.COLLAPSE;
+		return DisasterGroup.붕괴;
 	}
 }

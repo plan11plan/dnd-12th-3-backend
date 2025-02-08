@@ -28,6 +28,6 @@ public enum NaturalDisasterType implements DisasterType {
 
 	@Override
 	public DisasterGroup getParentType() {
-		return DisasterGroup.NATURAL;
+		return DisasterGroup.자연재난;
 	}
 }

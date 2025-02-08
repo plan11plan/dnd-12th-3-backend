@@ -19,6 +19,6 @@ public enum FireType implements DisasterType {
 
 	@Override
 	public DisasterGroup getParentType() {
-		return DisasterGroup.FIRE;
+		return DisasterGroup.화재;
 	}
 }

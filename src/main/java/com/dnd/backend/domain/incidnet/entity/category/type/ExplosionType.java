@@ -19,6 +19,6 @@ public enum ExplosionType implements DisasterType {
 
 	@Override
 	public DisasterGroup getParentType() {
-		return DisasterGroup.EXPLOSION;
+		return DisasterGroup.폭발;
 	}
 }

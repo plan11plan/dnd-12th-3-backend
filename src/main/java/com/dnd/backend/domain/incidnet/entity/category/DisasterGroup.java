@@ -18,20 +18,20 @@ import com.dnd.backend.domain.incidnet.entity.category.type.TerrorType;
 import com.dnd.backend.domain.incidnet.entity.category.type.TrafficType;
 
 public enum DisasterGroup {
-	TRAFFIC("교통", List.of(TrafficType.values())),
-	FIRE("화재", List.of(FireType.values())),
-	COLLAPSE("붕괴", List.of(CollapseType.values())),
-	EXPLOSION("폭발", List.of(ExplosionType.values())),
-	NATURAL("자연재난", List.of(NaturalDisasterType.values())),
-	FINE_DUST("미세먼지", List.of(FineDustType.values())),
-	TERROR("테러", List.of(TerrorType.values())),
+	교통("교통", List.of(TrafficType.values())),
+	화재("화재", List.of(FireType.values())),
+	붕괴("붕괴", List.of(CollapseType.values())),
+	폭발("폭발", List.of(ExplosionType.values())),
+	자연재난("자연재난", List.of(NaturalDisasterType.values())),
+	미세먼지("미세먼지", List.of(FineDustType.values())),
+	테러("테러", List.of(TerrorType.values())),
 	EMPTY("없음", Collections.EMPTY_LIST);
 
-	private final String name;
+	private final String displayName;
 	private final Map<String, DisasterType> subTypeMap;
 
 	DisasterGroup(String name, List<DisasterType> subTypes) {
-		this.name = name;
+		this.displayName = name;
 		this.subTypeMap = subTypes.stream()
 			.collect(Collectors.toMap(DisasterType::getName, Function.identity()));
 	}
@@ -52,7 +52,7 @@ public enum DisasterGroup {
 	}
 
 	public String getName() {
-		return name;
+		return displayName;
 	}
 
 	public List<DisasterType> getSubTypes() {
