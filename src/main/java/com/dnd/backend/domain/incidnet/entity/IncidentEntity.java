@@ -32,8 +32,6 @@ public class IncidentEntity extends BaseTimeEntity {
 
 	private Long writerId;
 
-	private String title;
-
 	@NotNull
 	private String description;
 
@@ -43,22 +41,23 @@ public class IncidentEntity extends BaseTimeEntity {
 	private double pointX;
 
 	private double pointY;
+	private String roadNameAddress;
 
 	@Builder
 	public IncidentEntity(
 		Long writerId,
-		String title,
 		String description,
 		DisasterGroup disasterGroup,
 		double pointX,
-		double pointY
+		double pointY,
+		String roadNameAddress
 	) {
 		this.writerId = Objects.requireNonNull(writerId);
-		this.title = Objects.requireNonNull(title);
 		this.description = Objects.requireNonNull(description);
 		this.disasterGroup = Objects.requireNonNull(disasterGroup);
 		this.pointX = pointX;
 		this.pointY = pointY;
+		this.roadNameAddress = roadNameAddress;
 	}
 
 }

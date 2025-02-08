@@ -16,16 +16,16 @@ import org.springframework.web.multipart.MultipartFile;
 import com.dnd.backend.application.incident.CreateIncidentUseCase;
 import com.dnd.backend.application.incident.GetIncidentsByCursorUseCase;
 import com.dnd.backend.application.incident.GetNearIncidentsUsecase;
+import com.dnd.backend.application.incident.IncidentWithMediaAndDistanceDto;
 import com.dnd.backend.application.incident.response.IncidentCursorResponse;
 import com.dnd.backend.domain.incidnet.dto.WriteIncidentCommand;
-import com.dnd.backend.domain.incidnet.entity.IncidentEntity;
 import com.dnd.backend.support.util.CursorRequest;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/incidents")
+@RequestMapping("/api/incidents")
 public class IncidentController {
 
 	private final CreateIncidentUseCase createIncidentUseCase;
@@ -53,12 +53,11 @@ public class IncidentController {
 	}
 
 	@GetMapping("/nearby")
-	public List<IncidentEntity> getIncidentsWithinDistance(
+	public List<IncidentWithMediaAndDistanceDto> getIncidentsWithinDistance(
 		@RequestParam double pointX,
 		@RequestParam double pointY,
 		@RequestParam(defaultValue = "5") double radiusInKm
 	) {
-		return getNearIncidentsUsecase
-			.execute(pointX, pointY, radiusInKm);
+		return getNearIncidentsUsecase.execute(pointX, pointY, radiusInKm);
 	}
 }

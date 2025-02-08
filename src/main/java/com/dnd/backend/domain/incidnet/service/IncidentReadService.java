@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.dnd.backend.domain.incidnet.dto.IncidentDistanceDto;
 import com.dnd.backend.domain.incidnet.entity.IncidentEntity;
 import com.dnd.backend.domain.incidnet.repository.JpaIncidentRepository;
 import com.dnd.backend.support.util.CursorRequest;
@@ -48,12 +49,16 @@ public class IncidentReadService {
 			pageable);
 	}
 
-	public List<IncidentEntity> findNearbyIncidents(double pointX, double pointY, double radiusKm) {
+	public List<IncidentDistanceDto> findNearbyIncidents(double pointX, double pointY, double radiusKm) {
 		List<IncidentEntity> allIncidents = incidentQueryRepository.findAll();
 
 		return allIncidents.stream()
-			.filter(
-				incident -> calculateDistance(pointX, pointY, incident.getPointX(), incident.getPointY()) <= radiusKm)
+			.map(incident -> {
+				double distance = calculateDistance(pointX, pointY,
+					incident.getPointX(), incident.getPointY());
+				return new IncidentDistanceDto(incident, distance);
+			})
+			.filter(dto -> dto.distance() <= radiusKm)
 			.collect(Collectors.toList());
 	}
 
