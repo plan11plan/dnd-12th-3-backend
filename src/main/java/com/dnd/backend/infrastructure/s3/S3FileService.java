@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.dnd.backend.domain.mediaFile.service.CloudStorageService;
 
+import io.awspring.cloud.s3.S3Resource;
 import io.awspring.cloud.s3.S3Template;
 import lombok.RequiredArgsConstructor;
 
@@ -24,8 +25,8 @@ public class S3FileService implements CloudStorageService {
 	public String uploadFile(MultipartFile file) {
 		try {
 			String key = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-			s3Template.upload(bucket, key, file.getInputStream());
-			return key;
+			S3Resource upload = s3Template.upload(bucket, key, file.getInputStream());
+			return upload.getURL().toString();
 		} catch (IOException e) {
 			throw new RuntimeException("파일 업로드 실패: " + file.getOriginalFilename(), e);
 		}
@@ -37,6 +38,5 @@ public class S3FileService implements CloudStorageService {
 		} catch (IOException e) {
 			throw new RuntimeException("파일 다운로드 오류", e);
 		}
-
 	}
 }
