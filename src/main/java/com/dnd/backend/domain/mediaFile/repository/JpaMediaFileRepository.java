@@ -14,6 +14,6 @@ public interface JpaMediaFileRepository extends JpaRepository<MediaFileEntity, L
 	@Query("SELECT m FROM MediaFileEntity m WHERE m.incidentId IN :incidentIds")
 	List<MediaFileEntity> findMediaFilesByIncidentIds(@Param("incidentIds") List<Long> incidentIds);
 
-	// Alternative using method name query derivation
-	List<MediaFileEntity> findByIncidentIdIn(List<Long> incidentIds);
+	@Query("SELECT m FROM MediaFileEntity m WHERE m.incidentId IN :incidentIds")
+	List<MediaFileEntity> findByIncidentIdIn(@Param("incidentIds") List<Long> incidentIds);
 }

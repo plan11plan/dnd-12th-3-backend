@@ -11,7 +11,7 @@ import com.dnd.backend.application.incident.response.IncidentCursorResponse;
 import com.dnd.backend.application.incident.response.IncidentWithMediaDto;
 import com.dnd.backend.domain.incidnet.entity.IncidentEntity;
 import com.dnd.backend.domain.incidnet.service.IncidentReadService;
-import com.dnd.backend.domain.mediaFile.entity.MediaFileEntity;
+import com.dnd.backend.domain.mediaFile.dto.MediaFileInfo;
 import com.dnd.backend.domain.mediaFile.service.MediaFileReadService;
 import com.dnd.backend.support.util.CursorRequest;
 
@@ -34,11 +34,11 @@ public class GetIncidentsByCursorUseCase {
 		var allMediaFiles = mediaFileReadService.getMediaFilesByIncidentIds(incidentIds);
 
 		var mediaFilesGrouped = allMediaFiles.stream()
-			.collect(groupingBy(MediaFileEntity::getIncidentId));
+			.collect(groupingBy(MediaFileInfo::incidentId));
 
 		var withMediaList = incidents.stream()
 			.map(incident -> {
-				List<MediaFileEntity> mediaFiles = mediaFilesGrouped.getOrDefault(incident.getId(), emptyList());
+				List<MediaFileInfo> mediaFiles = mediaFilesGrouped.getOrDefault(incident.getId(), emptyList());
 				return new IncidentWithMediaDto(incident, mediaFiles);
 			})
 			.collect(toList());
