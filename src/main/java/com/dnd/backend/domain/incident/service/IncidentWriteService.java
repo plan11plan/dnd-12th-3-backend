@@ -1,12 +1,12 @@
-package com.dnd.backend.domain.incidnet.service;
+package com.dnd.backend.domain.incident.service;
 
-import static com.dnd.backend.domain.incidnet.entity.category.DisasterGroup.*;
+import static com.dnd.backend.domain.incident.entity.category.DisasterGroup.*;
 
 import org.springframework.stereotype.Service;
 
-import com.dnd.backend.domain.incidnet.dto.WriteIncidentCommand;
-import com.dnd.backend.domain.incidnet.entity.IncidentEntity;
-import com.dnd.backend.domain.incidnet.repository.JpaIncidentRepository;
+import com.dnd.backend.domain.incident.dto.WriteIncidentCommand;
+import com.dnd.backend.domain.incident.entity.IncidentEntity;
+import com.dnd.backend.domain.incident.repository.JpaIncidentRepository;
 
 import lombok.RequiredArgsConstructor;
 

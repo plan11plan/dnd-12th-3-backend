@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.dnd.backend.domain.incidnet.dto.WriteIncidentCommand;
-import com.dnd.backend.domain.incidnet.service.IncidentWriteService;
+import com.dnd.backend.domain.incident.dto.WriteIncidentCommand;
+import com.dnd.backend.domain.incident.service.IncidentWriteService;
 import com.dnd.backend.domain.mediaFile.service.MediaFileWriteService;
 
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.dnd.backend.domain.incidnet.dto;
+package com.dnd.backend.domain.incident.dto;
 
 import java.time.LocalDate;
 

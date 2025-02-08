@@ -1,4 +1,4 @@
-package com.dnd.backend.domain.incidnet.dto;
+package com.dnd.backend.domain.incident.dto;
 
 public record WriteIncidentCommand(
 	Long writerId,

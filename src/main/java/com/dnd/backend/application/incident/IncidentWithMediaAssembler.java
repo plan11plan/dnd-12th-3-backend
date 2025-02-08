@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 import com.dnd.backend.application.incident.response.IncidentWithMediaDto;
-import com.dnd.backend.domain.incidnet.dto.IncidentDistanceDto;
-import com.dnd.backend.domain.incidnet.entity.IncidentEntity;
+import com.dnd.backend.domain.incident.dto.IncidentDistanceDto;
+import com.dnd.backend.domain.incident.entity.IncidentEntity;
 import com.dnd.backend.domain.mediaFile.dto.MediaFileInfo;
 import com.dnd.backend.domain.mediaFile.service.MediaFileReadService;
 import com.dnd.backend.support.util.DistanceFormatter;

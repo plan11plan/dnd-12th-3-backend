@@ -2,7 +2,7 @@ package com.dnd.backend.application.incident;
 
 import java.util.List;
 
-import com.dnd.backend.domain.incidnet.entity.IncidentEntity;
+import com.dnd.backend.domain.incident.entity.IncidentEntity;
 import com.dnd.backend.domain.mediaFile.dto.MediaFileInfo;
 
 public record IncidentWithMediaAndDistanceDto(

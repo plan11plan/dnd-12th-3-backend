@@ -4,13 +4,13 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.dnd.backend.domain.incidnet.service.IncidentReadService;
+import com.dnd.backend.domain.incident.service.IncidentReadService;
 
 import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class GetNearIncidentsUsecase {
+public class GetNearIncidentsUseCase {
 
 	private final IncidentReadService incidentReadService;
 	private final IncidentWithMediaAssembler incidentWithMediaAssembler;
