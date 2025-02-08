@@ -6,7 +6,7 @@ import com.dnd.backend.support.util.CursorRequest;
 
 public record IncidentCursorResponse(
 	CursorRequest nextCursorRequest,
-	List<IncidentWithMediaDto> incidentWithMediaDtos
+	List<IncidentWithMediaDto> incidents
 ) {
 
 }
