@@ -21,7 +21,6 @@ public class IncidentWriteService {
 
 		var incidentEntity = IncidentEntity.builder()
 			.writerId(command.writerId())
-			.title(command.description())
 			.description(command.description())
 			.disasterGroup(disasterGroup)
 			.pointX(command.pointX())

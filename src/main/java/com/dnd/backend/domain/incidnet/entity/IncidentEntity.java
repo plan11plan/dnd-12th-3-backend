@@ -32,8 +32,6 @@ public class IncidentEntity extends BaseTimeEntity {
 
 	private Long writerId;
 
-	private String title;
-
 	@NotNull
 	private String description;
 
@@ -47,14 +45,12 @@ public class IncidentEntity extends BaseTimeEntity {
 	@Builder
 	public IncidentEntity(
 		Long writerId,
-		String title,
 		String description,
 		DisasterGroup disasterGroup,
 		double pointX,
 		double pointY
 	) {
 		this.writerId = Objects.requireNonNull(writerId);
-		this.title = Objects.requireNonNull(title);
 		this.description = Objects.requireNonNull(description);
 		this.disasterGroup = Objects.requireNonNull(disasterGroup);
 		this.pointX = pointX;
