@@ -13,4 +13,7 @@ public interface JpaIncidentRepository extends JpaRepository<IncidentEntity, Lon
 	List<IncidentEntity> findAllByWriterId(Long writerId, Pageable pageable);
 
 	List<IncidentEntity> findAllByWriterIdAndIdLessThan(Long writerId, Long id, Pageable pageable);
+
+	List<IncidentEntity> findAll();
+
 }

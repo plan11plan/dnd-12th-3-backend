@@ -8,14 +8,17 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.dnd.backend.application.incident.CreateIncidentUseCase;
 import com.dnd.backend.application.incident.GetIncidentsByCursorUseCase;
+import com.dnd.backend.application.incident.GetNearIncidentsUsecase;
 import com.dnd.backend.application.incident.response.IncidentCursorResponse;
 import com.dnd.backend.domain.incidnet.dto.WriteIncidentCommand;
+import com.dnd.backend.domain.incidnet.entity.IncidentEntity;
 import com.dnd.backend.support.util.CursorRequest;
 
 import lombok.RequiredArgsConstructor;
@@ -27,6 +30,7 @@ public class IncidentController {
 
 	private final CreateIncidentUseCase createIncidentUseCase;
 	private final GetIncidentsByCursorUseCase getIncidentsByCursorUseCase;
+	private final GetNearIncidentsUsecase getNearIncidentsUsecase;
 
 	@PostMapping(consumes = {"multipart/form-data"})
 	public void createIncident(
@@ -41,11 +45,20 @@ public class IncidentController {
 	}
 
 	@GetMapping("/writer/{writerId}")
-	public IncidentCursorResponse getIncidentsByCursor(
+	public IncidentCursorResponse getWriterIncidentsByCursor(
 		@PathVariable("writerId") Long writerId,
 		@ModelAttribute CursorRequest cursorRequest) {
 
 		return getIncidentsByCursorUseCase.execute(writerId, cursorRequest);
 	}
 
+	@GetMapping("/nearby")
+	public List<IncidentEntity> getIncidentsWithinDistance(
+		@RequestParam double pointX,
+		@RequestParam double pointY,
+		@RequestParam(defaultValue = "5") double radiusInKm
+	) {
+		return getNearIncidentsUsecase
+			.execute(pointX, pointY, radiusInKm);
+	}
 }

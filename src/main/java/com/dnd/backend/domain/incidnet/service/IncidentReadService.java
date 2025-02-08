@@ -3,6 +3,7 @@ package com.dnd.backend.domain.incidnet.service;
 import static org.springframework.data.domain.Sort.Direction.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -45,6 +46,27 @@ public class IncidentReadService {
 		return incidentQueryRepository.findAllByWriterId(
 			writerId,
 			pageable);
+	}
+
+	public List<IncidentEntity> findNearbyIncidents(double pointX, double pointY, double radiusKm) {
+		List<IncidentEntity> allIncidents = incidentQueryRepository.findAll();
+
+		return allIncidents.stream()
+			.filter(
+				incident -> calculateDistance(pointX, pointY, incident.getPointX(), incident.getPointY()) <= radiusKm)
+			.collect(Collectors.toList());
+	}
+
+	// Haversine 공식을 사용하여 두 좌표 간의 거리 계산 (단위: km)
+	private double calculateDistance(double x1, double y1, double x2, double y2) {
+		final int R = 6371; // 지구의 반지름 (km)
+		double latDistance = Math.toRadians(x2 - x1);
+		double lonDistance = Math.toRadians(y2 - y1);
+		double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+			+ Math.cos(Math.toRadians(x1)) * Math.cos(Math.toRadians(x2))
+			* Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+		return R * c; // 거리 (km)
 	}
 }
 
