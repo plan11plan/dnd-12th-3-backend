@@ -1,4 +1,4 @@
-package com.dnd.backend.domain.incidnet.service;
+package com.dnd.backend.domain.incident.service;
 
 public interface GeocodingService {
 	String getRoadNameAddress(double pointX, double pointY);

@@ -3,7 +3,7 @@ package com.dnd.backend.application.incident;
 import org.springframework.stereotype.Component;
 
 import com.dnd.backend.application.incident.response.IncidentCursorResponse;
-import com.dnd.backend.domain.incidnet.service.IncidentReadService;
+import com.dnd.backend.domain.incident.service.IncidentReadService;
 import com.dnd.backend.support.util.CursorRequest;
 
 import lombok.RequiredArgsConstructor;

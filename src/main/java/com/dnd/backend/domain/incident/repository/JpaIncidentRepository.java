@@ -1,4 +1,4 @@
-package com.dnd.backend.domain.incidnet.repository;
+package com.dnd.backend.domain.incident.repository;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.dnd.backend.domain.incidnet.entity.IncidentEntity;
+import com.dnd.backend.domain.incident.entity.IncidentEntity;
 
 @Repository
 public interface JpaIncidentRepository extends JpaRepository<IncidentEntity, Long> {

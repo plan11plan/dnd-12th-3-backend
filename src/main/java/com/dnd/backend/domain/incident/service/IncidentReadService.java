@@ -1,4 +1,4 @@
-package com.dnd.backend.domain.incidnet.service;
+package com.dnd.backend.domain.incident.service;
 
 import static org.springframework.data.domain.Sort.Direction.*;
 
@@ -9,9 +9,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.dnd.backend.domain.incidnet.dto.IncidentDistanceDto;
-import com.dnd.backend.domain.incidnet.entity.IncidentEntity;
-import com.dnd.backend.domain.incidnet.repository.JpaIncidentRepository;
+import com.dnd.backend.domain.incident.dto.IncidentDistanceDto;
+import com.dnd.backend.domain.incident.entity.IncidentEntity;
+import com.dnd.backend.domain.incident.repository.JpaIncidentRepository;
 import com.dnd.backend.support.util.CursorRequest;
 import com.dnd.backend.support.util.CursorResponse;
 

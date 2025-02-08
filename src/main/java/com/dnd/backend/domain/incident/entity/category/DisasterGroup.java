@@ -1,4 +1,4 @@
-package com.dnd.backend.domain.incidnet.entity.category;
+package com.dnd.backend.domain.incident.entity.category;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,13 +9,13 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.dnd.backend.domain.incidnet.entity.category.type.CollapseType;
-import com.dnd.backend.domain.incidnet.entity.category.type.ExplosionType;
-import com.dnd.backend.domain.incidnet.entity.category.type.FineDustType;
-import com.dnd.backend.domain.incidnet.entity.category.type.FireType;
-import com.dnd.backend.domain.incidnet.entity.category.type.NaturalDisasterType;
-import com.dnd.backend.domain.incidnet.entity.category.type.TerrorType;
-import com.dnd.backend.domain.incidnet.entity.category.type.TrafficType;
+import com.dnd.backend.domain.incident.entity.category.type.CollapseType;
+import com.dnd.backend.domain.incident.entity.category.type.ExplosionType;
+import com.dnd.backend.domain.incident.entity.category.type.FineDustType;
+import com.dnd.backend.domain.incident.entity.category.type.FireType;
+import com.dnd.backend.domain.incident.entity.category.type.NaturalDisasterType;
+import com.dnd.backend.domain.incident.entity.category.type.TerrorType;
+import com.dnd.backend.domain.incident.entity.category.type.TrafficType;
 
 public enum DisasterGroup {
 	교통("교통", List.of(TrafficType.values())),

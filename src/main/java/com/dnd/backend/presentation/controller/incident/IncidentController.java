@@ -15,10 +15,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.dnd.backend.application.incident.CreateIncidentUseCase;
 import com.dnd.backend.application.incident.GetIncidentsByCursorUseCase;
-import com.dnd.backend.application.incident.GetNearIncidentsUsecase;
+import com.dnd.backend.application.incident.GetNearIncidentsUseCase;
 import com.dnd.backend.application.incident.IncidentWithMediaAndDistanceDto;
 import com.dnd.backend.application.incident.response.IncidentCursorResponse;
-import com.dnd.backend.domain.incidnet.dto.WriteIncidentCommand;
+import com.dnd.backend.domain.incident.dto.WriteIncidentCommand;
 import com.dnd.backend.support.util.CursorRequest;
 
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class IncidentController {
 
 	private final CreateIncidentUseCase createIncidentUseCase;
 	private final GetIncidentsByCursorUseCase getIncidentsByCursorUseCase;
-	private final GetNearIncidentsUsecase getNearIncidentsUsecase;
+	private final GetNearIncidentsUseCase getNearIncidentsUsecase;
 
 	@PostMapping(consumes = {"multipart/form-data"})
 	public void createIncident(

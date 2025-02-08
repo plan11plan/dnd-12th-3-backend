@@ -1,8 +1,8 @@
-package com.dnd.backend.domain.incidnet.entity;
+package com.dnd.backend.domain.incident.entity;
 
 import java.util.Objects;
 
-import com.dnd.backend.domain.incidnet.entity.category.DisasterGroup;
+import com.dnd.backend.domain.incident.entity.category.DisasterGroup;
 import com.dnd.backend.support.auditing.BaseTimeEntity;
 
 import jakarta.persistence.Entity;
