@@ -19,6 +19,8 @@ import com.dnd.backend.application.incident.GetNearIncidentsUseCase;
 import com.dnd.backend.application.incident.IncidentWithMediaAndDistanceDto;
 import com.dnd.backend.application.incident.response.IncidentCursorResponse;
 import com.dnd.backend.domain.incident.dto.WriteIncidentCommand;
+import com.dnd.backend.domain.incident.entity.IncidentEntity;
+import com.dnd.backend.domain.incident.service.IncidentReadService;
 import com.dnd.backend.support.util.CursorRequest;
 
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,12 @@ public class IncidentController {
 	private final CreateIncidentUseCase createIncidentUseCase;
 	private final GetIncidentsByCursorUseCase getIncidentsByCursorUseCase;
 	private final GetNearIncidentsUseCase getNearIncidentsUsecase;
+	private final IncidentReadService incidentReadService;
+
+	@GetMapping("/test/findAll")
+	public List<IncidentEntity> createIncident() {
+		return incidentReadService.findAll();
+	}
 
 	@PostMapping(consumes = {"multipart/form-data"})
 	public void createIncident(
