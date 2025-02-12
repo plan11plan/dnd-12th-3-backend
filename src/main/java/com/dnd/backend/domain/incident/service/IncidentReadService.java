@@ -11,7 +11,8 @@ import org.springframework.stereotype.Service;
 
 import com.dnd.backend.domain.incident.dto.IncidentDistanceDto;
 import com.dnd.backend.domain.incident.entity.IncidentEntity;
-import com.dnd.backend.domain.incident.repository.JpaIncidentRepository;
+import com.dnd.backend.domain.incident.exception.IncidentNotFoundException;
+import com.dnd.backend.domain.incident.repository.IncidentRepository;
 import com.dnd.backend.support.util.CursorRequest;
 import com.dnd.backend.support.util.CursorResponse;
 
@@ -20,10 +21,10 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class IncidentReadService {
-	private final JpaIncidentRepository incidentQueryRepository;
+	private final IncidentRepository incidentRepository;
 
 	public List<IncidentEntity> findAll() {
-		return incidentQueryRepository.findAll();
+		return incidentRepository.findAll().orElseThrow(IncidentNotFoundException::new);
 	}
 
 	public CursorResponse<IncidentEntity> getIncidents(Long writerId, CursorRequest cursorRequest) {
@@ -43,22 +44,25 @@ public class IncidentReadService {
 			Sort.by(DESC, "id")
 		);
 		if (cursorRequest.hasKey()) {
-			return incidentQueryRepository.findAllByWriterIdAndIdLessThan(
-				writerId,
-				cursorRequest.key(),
-				pageable);
+			return incidentRepository.findAllByWriterIdAndIdLessThan(
+					writerId,
+					cursorRequest.key(),
+					pageable)
+				.orElseThrow(IncidentNotFoundException::new);
 		}
-		return incidentQueryRepository.findAllByWriterId(
-			writerId,
-			pageable);
+		return incidentRepository.findAllByWriterId(
+				writerId,
+				pageable)
+			.orElseThrow(IncidentNotFoundException::new);
 	}
 
 	public List<IncidentDistanceDto> findNearbyIncidents(double pointX, double pointY, double radiusKm) {
-		List<IncidentEntity> allIncidents = incidentQueryRepository.findAll();
+		List<IncidentEntity> allIncidents = incidentRepository.findAll()
+			.orElseThrow(IncidentNotFoundException::new);
 
 		return allIncidents.stream()
 			.map(incident -> {
-				double distance = calculateDistance(pointY, pointX, // 위도, 경도 순서로 전달
+				double distance = calculateDistance(pointY, pointX,
 					incident.getPointY(), incident.getPointX());
 				return new IncidentDistanceDto(incident, distance);
 			})
