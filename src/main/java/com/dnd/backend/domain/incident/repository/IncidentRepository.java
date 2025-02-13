@@ -17,4 +17,7 @@ public interface IncidentRepository {
 	Optional<List<IncidentEntity>> findAllByWriterIdAndIdLessThan(Long writerId, Long id, Pageable pageable);
 
 	Optional<List<IncidentEntity>> findAll();
+
+	void deleteById(IncidentEntity id);
+
 }

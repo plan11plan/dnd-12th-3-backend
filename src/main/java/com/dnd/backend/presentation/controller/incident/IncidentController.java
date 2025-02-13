@@ -3,6 +3,7 @@ package com.dnd.backend.presentation.controller.incident;
 import java.util.Collections;
 import java.util.List;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.dnd.backend.application.incident.CreateIncidentUseCase;
+import com.dnd.backend.application.incident.DeleteIncidentUseCase;
 import com.dnd.backend.application.incident.GetIncidentsByCursorUseCase;
 import com.dnd.backend.application.incident.GetNearIncidentsUseCase;
 import com.dnd.backend.application.incident.IncidentWithMediaAndDistanceDto;
@@ -40,6 +42,7 @@ public class IncidentController {
 	private final GetIncidentsByCursorUseCase getIncidentsByCursorUseCase;
 	private final GetNearIncidentsUseCase getNearIncidentsUsecase;
 	private final IncidentReadService incidentReadService;
+	private final DeleteIncidentUseCase deleteIncidentUseCase;
 
 	@GetMapping("/test/findAll")
 	public List<IncidentEntity> createIncident() {
@@ -63,6 +66,12 @@ public class IncidentController {
 		@PathVariable("incidentId") Long incidentId,
 		@Valid @RequestBody UpdateIncidentCommand command) {
 		updateIncidentUseCase.execute(incidentId, command);
+	}
+
+	@DeleteMapping("/{incidentId}")
+	public void deleteIncident(
+		@PathVariable("incidentId") Long incidentId) {
+		deleteIncidentUseCase.execute(incidentId);
 	}
 
 	@GetMapping("/writer/{writerId}")

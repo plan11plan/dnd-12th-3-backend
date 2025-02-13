@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class IncidentWriteService {
-	private final IncidentRepository incidentCommandRepository;
+	private final IncidentRepository incidentRepository;
 	private final GeocodingService geocodingService;
 
 	@Transactional
@@ -36,12 +36,12 @@ public class IncidentWriteService {
 			.pointY(command.pointY())
 			.build();
 
-		return incidentCommandRepository.save(incidentEntity).getId();
+		return incidentRepository.save(incidentEntity).getId();
 	}
 
 	@Transactional
-	public void updateDescription(Long incidentId, UpdateIncidentCommand command) {
-		IncidentEntity incidentEntity = incidentCommandRepository.findById(incidentId)
+	public void updateIncidentDetails(Long incidentId, UpdateIncidentCommand command) {
+		IncidentEntity incidentEntity = incidentRepository.findById(incidentId)
 			.orElseThrow(IncidentNotFoundException::new);
 
 		if (command.toDescription() == null || command.toDescription().isBlank()) {
@@ -50,6 +50,12 @@ public class IncidentWriteService {
 
 		incidentEntity = incidentEntity.updateDetails(command.toDescription(), command.toLocationName(),
 			DisasterCategory.mapToDisasterGroup(command.toDisasterCategory()));
-		incidentCommandRepository.save(incidentEntity);
+		incidentRepository.save(incidentEntity);
+	}
+
+	public void delete(Long incidentId) {
+		var incidentEntity = incidentRepository.findById(incidentId)
+			.orElseThrow(IncidentNotFoundException::new);
+		incidentRepository.deleteById(incidentEntity);
 	}
 }

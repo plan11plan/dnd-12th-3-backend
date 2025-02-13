@@ -2,17 +2,16 @@ package com.dnd.backend.application.incident;
 
 import org.springframework.stereotype.Component;
 
-import com.dnd.backend.domain.incident.dto.UpdateIncidentCommand;
 import com.dnd.backend.domain.incident.service.IncidentWriteService;
 
 import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class UpdateIncidentDescriptionUseCase {
+public class DeleteIncidentUseCase {
 	private final IncidentWriteService incidentWriteService;
 
-	public void execute(Long incidentId, UpdateIncidentCommand command) {
-		incidentWriteService.updateIncidentDetails(incidentId, command);
+	public void execute(Long incidentId) {
+		incidentWriteService.delete(incidentId);
 	}
 }

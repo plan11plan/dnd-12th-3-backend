@@ -44,4 +44,10 @@ public class IncidentRepositoryImpl implements IncidentRepository {
 		var incidentEntities = incidentJpaRepository.findAll();
 		return Optional.of(incidentEntities);
 	}
+
+	@Override
+	public void deleteById(IncidentEntity incidentEntity) {
+		incidentJpaRepository.delete(incidentEntity);
+	}
+
 }
