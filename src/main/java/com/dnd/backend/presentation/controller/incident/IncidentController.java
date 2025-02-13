@@ -5,8 +5,10 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -17,12 +19,15 @@ import com.dnd.backend.application.incident.CreateIncidentUseCase;
 import com.dnd.backend.application.incident.GetIncidentsByCursorUseCase;
 import com.dnd.backend.application.incident.GetNearIncidentsUseCase;
 import com.dnd.backend.application.incident.IncidentWithMediaAndDistanceDto;
+import com.dnd.backend.application.incident.UpdateIncidentDescriptionUseCase;
 import com.dnd.backend.application.incident.response.IncidentCursorResponse;
+import com.dnd.backend.domain.incident.dto.UpdateIncidentCommand;
 import com.dnd.backend.domain.incident.dto.WriteIncidentCommand;
 import com.dnd.backend.domain.incident.entity.IncidentEntity;
 import com.dnd.backend.domain.incident.service.IncidentReadService;
 import com.dnd.backend.support.util.CursorRequest;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -31,6 +36,7 @@ import lombok.RequiredArgsConstructor;
 public class IncidentController {
 
 	private final CreateIncidentUseCase createIncidentUseCase;
+	private final UpdateIncidentDescriptionUseCase updateIncidentUseCase;
 	private final GetIncidentsByCursorUseCase getIncidentsByCursorUseCase;
 	private final GetNearIncidentsUseCase getNearIncidentsUsecase;
 	private final IncidentReadService incidentReadService;
@@ -50,6 +56,13 @@ public class IncidentController {
 			files = Collections.emptyList();
 		}
 		createIncidentUseCase.execute(command, files);
+	}
+
+	@PatchMapping("/{incidentId}")
+	public void updateIncident(
+		@PathVariable("incidentId") Long incidentId,
+		@Valid @RequestBody UpdateIncidentCommand command) {
+		updateIncidentUseCase.execute(incidentId, command);
 	}
 
 	@GetMapping("/writer/{writerId}")

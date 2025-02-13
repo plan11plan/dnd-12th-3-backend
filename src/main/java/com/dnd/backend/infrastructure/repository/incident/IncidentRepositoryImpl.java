@@ -23,6 +23,11 @@ public class IncidentRepositoryImpl implements IncidentRepository {
 	}
 
 	@Override
+	public Optional<IncidentEntity> findById(Long id) {
+		return incidentJpaRepository.findById(id);
+	}
+
+	@Override
 	public Optional<List<IncidentEntity>> findAllByWriterId(Long writerId, Pageable pageable) {
 		var incidentEntities = incidentJpaRepository.findAllByWriterId(writerId, pageable);
 		return Optional.of(incidentEntities);

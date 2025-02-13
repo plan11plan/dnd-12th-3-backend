@@ -22,6 +22,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @Table(name = "incidents")
+@Builder(toBuilder = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class IncidentEntity extends BaseTimeEntity {
@@ -58,6 +59,18 @@ public class IncidentEntity extends BaseTimeEntity {
 		this.pointX = pointX;
 		this.pointY = pointY;
 		this.roadNameAddress = roadNameAddress;
+	}
+
+	public final IncidentEntity updateDetails(
+		String description,
+		String roadNameAddress,
+		DisasterGroup disasterGroup
+	) {
+		return this.toBuilder()
+			.description(description)
+			.roadNameAddress(roadNameAddress)
+			.disasterGroup(disasterGroup)
+			.build();
 	}
 
 }
