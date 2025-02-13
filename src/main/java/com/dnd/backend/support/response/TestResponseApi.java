@@ -39,7 +39,8 @@ public class TestResponseApi {
 		return new Response.Fail(
 			ServerErrorCode.INTERNAL_ERROR,
 			"thif is fail message",
-			new MockResult("matthew", 23));
+			new MockResult("matthew", 23),
+			new HashMap<>());
 	}
 
 	@GetMapping("/string")
