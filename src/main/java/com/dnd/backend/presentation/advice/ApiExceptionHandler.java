@@ -18,10 +18,15 @@ public class ApiExceptionHandler {
 	 * 기타 모든 예외 처리
 	 */
 	@ExceptionHandler(Exception.class)
-	ResponseEntity<Response> defaultErrorHandler(HttpServletRequest request, Exception e) throws Exception {
-		return ResponseEntity.ok(Response.fail(ServerErrorCode.INTERNAL_ERROR, e.getMessage(), null));
+	ResponseEntity<Response<?>> defaultErrorHandler(HttpServletRequest request, Exception e) {
+		return ResponseEntity.ok(
+			Response.fail(
+				ServerErrorCode.INTERNAL_ERROR,
+				"서버 오류가 발생했습니다: " + e.getMessage(),
+				null,
+				null
+			)
+		);
 	}
-	/**
-	 * 다른 비즈니스 로직 처리 추가할 예정
-	 */
+
 }

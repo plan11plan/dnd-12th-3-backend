@@ -16,8 +16,9 @@ import com.dnd.backend.domain.incident.entity.category.type.FireType;
 import com.dnd.backend.domain.incident.entity.category.type.NaturalDisasterType;
 import com.dnd.backend.domain.incident.entity.category.type.TerrorType;
 import com.dnd.backend.domain.incident.entity.category.type.TrafficType;
+import com.dnd.backend.domain.incident.exception.InvalidDisasterCategoryException;
 
-public enum DisasterGroup {
+public enum DisasterCategory {
 	교통("교통", List.of(TrafficType.values())),
 	화재("화재", List.of(FireType.values())),
 	붕괴("붕괴", List.of(CollapseType.values())),
@@ -30,17 +31,17 @@ public enum DisasterGroup {
 	private final String displayName;
 	private final Map<String, DisasterType> subTypeMap;
 
-	DisasterGroup(String name, List<DisasterType> subTypes) {
+	DisasterCategory(String name, List<DisasterType> subTypes) {
 		this.displayName = name;
 		this.subTypeMap = subTypes.stream()
 			.collect(Collectors.toMap(DisasterType::getName, Function.identity()));
 	}
 
-	public static DisasterGroup mapToDisasterGroup(String groupName) {
-		return Arrays.stream(DisasterGroup.values())
+	public static DisasterCategory mapToDisasterGroup(String groupName) {
+		return Arrays.stream(DisasterCategory.values())
 			.filter(group -> group.getName().equals(groupName))
 			.findFirst()
-			.orElseThrow(() -> new IllegalArgumentException("유효하지 않은 재난 그룹: " + groupName));
+			.orElseThrow(InvalidDisasterCategoryException::new);
 	}
 
 	public Optional<DisasterType> getDisasterSubType(String name) {

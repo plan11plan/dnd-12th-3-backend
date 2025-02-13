@@ -4,5 +4,5 @@ package com.dnd.backend.domain.incident.entity.category;
 public interface DisasterType {
 	String getName();
 
-	DisasterGroup getParentType();
+	DisasterCategory getParentType();
 }

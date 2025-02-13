@@ -1,6 +1,6 @@
 package com.dnd.backend.domain.incident.entity.category.type;
 
-import com.dnd.backend.domain.incident.entity.category.DisasterGroup;
+import com.dnd.backend.domain.incident.entity.category.DisasterCategory;
 import com.dnd.backend.domain.incident.entity.category.DisasterType;
 
 public enum CollapseType implements DisasterType {
@@ -18,7 +18,7 @@ public enum CollapseType implements DisasterType {
 	}
 
 	@Override
-	public DisasterGroup getParentType() {
-		return DisasterGroup.붕괴;
+	public DisasterCategory getParentType() {
+		return DisasterCategory.붕괴;
 	}
 }

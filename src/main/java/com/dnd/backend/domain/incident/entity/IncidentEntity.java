@@ -2,7 +2,7 @@ package com.dnd.backend.domain.incident.entity;
 
 import java.util.Objects;
 
-import com.dnd.backend.domain.incident.entity.category.DisasterGroup;
+import com.dnd.backend.domain.incident.entity.category.DisasterCategory;
 import com.dnd.backend.support.auditing.BaseTimeEntity;
 
 import jakarta.persistence.Entity;
@@ -22,6 +22,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @Table(name = "incidents")
+@Builder(toBuilder = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class IncidentEntity extends BaseTimeEntity {
@@ -36,7 +37,7 @@ public class IncidentEntity extends BaseTimeEntity {
 	private String description;
 
 	@Enumerated(EnumType.STRING)
-	private DisasterGroup disasterGroup;
+	private DisasterCategory disasterCategory;
 
 	private double pointX;
 
@@ -47,17 +48,29 @@ public class IncidentEntity extends BaseTimeEntity {
 	public IncidentEntity(
 		Long writerId,
 		String description,
-		DisasterGroup disasterGroup,
+		DisasterCategory disasterCategory,
 		double pointX,
 		double pointY,
 		String roadNameAddress
 	) {
 		this.writerId = Objects.requireNonNull(writerId);
 		this.description = Objects.requireNonNull(description);
-		this.disasterGroup = Objects.requireNonNull(disasterGroup);
+		this.disasterCategory = Objects.requireNonNull(disasterCategory);
 		this.pointX = pointX;
 		this.pointY = pointY;
 		this.roadNameAddress = roadNameAddress;
+	}
+
+	public final IncidentEntity updateDetails(
+		String description,
+		String roadNameAddress,
+		DisasterCategory disasterCategory
+	) {
+		return this.toBuilder()
+			.description(description)
+			.roadNameAddress(roadNameAddress)
+			.disasterCategory(disasterCategory)
+			.build();
 	}
 
 }
