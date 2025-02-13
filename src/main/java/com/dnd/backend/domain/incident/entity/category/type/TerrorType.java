@@ -1,6 +1,6 @@
 package com.dnd.backend.domain.incident.entity.category.type;
 
-import com.dnd.backend.domain.incident.entity.category.DisasterGroup;
+import com.dnd.backend.domain.incident.entity.category.DisasterCategory;
 import com.dnd.backend.domain.incident.entity.category.DisasterType;
 
 public enum TerrorType implements DisasterType {
@@ -19,7 +19,7 @@ public enum TerrorType implements DisasterType {
 	}
 
 	@Override
-	public DisasterGroup getParentType() {
-		return DisasterGroup.테러;
+	public DisasterCategory getParentType() {
+		return DisasterCategory.테러;
 	}
 }

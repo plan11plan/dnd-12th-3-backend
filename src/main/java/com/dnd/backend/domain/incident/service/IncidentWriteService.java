@@ -1,6 +1,6 @@
 package com.dnd.backend.domain.incident.service;
 
-import static com.dnd.backend.domain.incident.entity.category.DisasterGroup.*;
+import static com.dnd.backend.domain.incident.entity.category.DisasterCategory.*;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.dnd.backend.domain.incident.dto.UpdateIncidentCommand;
 import com.dnd.backend.domain.incident.dto.WriteIncidentCommand;
 import com.dnd.backend.domain.incident.entity.IncidentEntity;
-import com.dnd.backend.domain.incident.entity.category.DisasterGroup;
+import com.dnd.backend.domain.incident.entity.category.DisasterCategory;
 import com.dnd.backend.domain.incident.exception.IncidentNotFoundException;
 import com.dnd.backend.domain.incident.exception.InvalidDescriptionException;
 import com.dnd.backend.domain.incident.repository.IncidentRepository;
@@ -31,7 +31,7 @@ public class IncidentWriteService {
 			.roadNameAddress(roadNameAddress)
 			.writerId(command.writerId())
 			.description(command.description())
-			.disasterGroup(disasterGroup)
+			.disasterCategory(disasterGroup)
 			.pointX(command.pointX())
 			.pointY(command.pointY())
 			.build();
@@ -44,12 +44,12 @@ public class IncidentWriteService {
 		IncidentEntity incidentEntity = incidentCommandRepository.findById(incidentId)
 			.orElseThrow(IncidentNotFoundException::new);
 
-		if (command.newDescription() == null || command.newDescription().isBlank()) {
+		if (command.toDescription() == null || command.toDescription().isBlank()) {
 			throw new InvalidDescriptionException();
 		}
 
-		incidentEntity = incidentEntity.updateDetails(command.newDescription(), command.newLocationName(),
-			DisasterGroup.mapToDisasterGroup(command.newDisasterGroup()));
+		incidentEntity = incidentEntity.updateDetails(command.toDescription(), command.toLocationName(),
+			DisasterCategory.mapToDisasterGroup(command.toDisasterCategory()));
 		incidentCommandRepository.save(incidentEntity);
 	}
 }

@@ -1,6 +1,7 @@
 package com.dnd.backend.support.response;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
@@ -40,7 +41,7 @@ public class TestResponseApi {
 			ServerErrorCode.INTERNAL_ERROR,
 			"thif is fail message",
 			new MockResult("matthew", 23),
-			new HashMap<>());
+			List.of(new Response.ErrorDetail("maa", "에러필드테스트")));
 	}
 
 	@GetMapping("/string")
