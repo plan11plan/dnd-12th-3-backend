@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dnd.backend.domain.comment.usecase.CreateCommentReplyUsecase;
 import com.dnd.backend.domain.comment.usecase.CreateCommentUsecase;
+import com.dnd.backend.domain.comment.usecase.UpdateCommentUsecase;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -27,10 +28,8 @@ public class CommentController {
 	private final CommentUseCase commentUseCase;
 	private final CreateCommentUsecase createCommentUsecase;
 	private final CreateCommentReplyUsecase createCommentReplyUsecase;
+	private final UpdateCommentUsecase updateCommentUsecase;
 
-	/**
-	 * 게시글 댓글 생성
-	 */
 	@PostMapping
 	public void createComment(
 		@PathVariable Long incidentId,
@@ -38,15 +37,31 @@ public class CommentController {
 		createCommentUsecase.execute(incidentId, request.getWriterId(), request.getContent());
 	}
 
-	/**
-	 * 게시글의 대댓글(답글) 생성
-	 */
 	@PostMapping("/{parentId}/replies")
 	public void createCommentReply(
 		@PathVariable Long incidentId,
 		@PathVariable Long parentId,
 		@RequestBody CreateCommentRequest request) {
 		createCommentReplyUsecase.execute(incidentId, request.getWriterId(), request.getContent(), parentId);
+	}
+
+	@PutMapping("/{commentId}")
+	public void updateComment(
+		@PathVariable Long incidentId,
+		@PathVariable Long commentId,
+		@RequestBody UpdateCommentRequest request) {
+		updateCommentUsecase.execute(incidentId, commentId, request.getWriterId(), request.getContent());
+	}
+
+	/**
+	 * 댓글 삭제
+	 */
+	@DeleteMapping("/{commentId}")
+	public ResponseEntity<Void> deleteComment(
+		@PathVariable Long incidentId,
+		@PathVariable Long commentId) {
+		commentUseCase.deleteComment(commentId);
+		return ResponseEntity.noContent().build();
 	}
 
 	/**
@@ -72,29 +87,6 @@ public class CommentController {
 		return ResponseEntity.ok(responses);
 	}
 
-	/**
-	 * 댓글 수정
-	 */
-	@PutMapping("/{commentId}")
-	public ResponseEntity<CommentResponse> updateComment(
-		@PathVariable Long incidentId,
-		@PathVariable Long commentId,
-		@RequestBody UpdateCommentRequest request) {
-		CommentEntity updated = commentUseCase.updateComment(commentId, request.getContent());
-		return ResponseEntity.ok(new CommentResponse(updated));
-	}
-
-	/**
-	 * 댓글 삭제
-	 */
-	@DeleteMapping("/{commentId}")
-	public ResponseEntity<Void> deleteComment(
-		@PathVariable Long incidentId,
-		@PathVariable Long commentId) {
-		commentUseCase.deleteComment(commentId);
-		return ResponseEntity.noContent().build();
-	}
-
 	@Data
 	public static class CreateCommentRequest {
 		private Long writerId;
@@ -103,6 +95,7 @@ public class CommentController {
 
 	@Data
 	public static class UpdateCommentRequest {
+		private Long writerId;
 		private String content;
 	}
 
