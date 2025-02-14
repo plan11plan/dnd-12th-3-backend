@@ -1,4 +1,4 @@
-package com.dnd.backend.domain.comment.usecase;
+package com.dnd.backend.application.comment;
 
 import org.springframework.stereotype.Component;
 

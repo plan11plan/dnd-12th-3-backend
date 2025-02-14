@@ -1,4 +1,4 @@
-package com.dnd.backend.domain.comment;
+package com.dnd.backend.presentation.controller.comment;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,12 +13,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dnd.backend.domain.comment.usecase.CreateCommentReplyUsecase;
-import com.dnd.backend.domain.comment.usecase.CreateCommentUsecase;
-import com.dnd.backend.domain.comment.usecase.DeleteCommentUsecase;
-import com.dnd.backend.domain.comment.usecase.GetCommentUsecase;
-import com.dnd.backend.domain.comment.usecase.GetCommentsUsecase;
-import com.dnd.backend.domain.comment.usecase.UpdateCommentUsecase;
+import com.dnd.backend.application.comment.CreateCommentReplyUsecase;
+import com.dnd.backend.application.comment.CreateCommentUsecase;
+import com.dnd.backend.application.comment.DeleteCommentUsecase;
+import com.dnd.backend.application.comment.GetCommentUsecase;
+import com.dnd.backend.application.comment.GetCommentsUsecase;
+import com.dnd.backend.application.comment.UpdateCommentUsecase;
+import com.dnd.backend.domain.comment.CommentEntity;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

@@ -52,7 +52,6 @@ public class CommentEntity extends BaseTimeEntity {
 	@Builder.Default
 	private List<CommentEntity> children = new ArrayList<>();
 
-	// 내용 수정 메서드
 	public void updateContent(String newContent) {
 		this.content = Objects.requireNonNull(newContent);
 	}

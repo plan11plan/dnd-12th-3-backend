@@ -1,4 +1,4 @@
-package com.dnd.backend.domain.comment.usecase;
+package com.dnd.backend.application.comment;
 
 import java.util.List;
 
