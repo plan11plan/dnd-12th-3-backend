@@ -81,5 +81,10 @@ public class IncidentReadService {
 		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 		return R * c; // 거리 (km)
 	}
+
+	public IncidentEntity getIncident(Long incidentId) {
+		return incidentRepository.findById(incidentId)
+			.orElseThrow(IncidentNotFoundException::new);
+	}
 }
 

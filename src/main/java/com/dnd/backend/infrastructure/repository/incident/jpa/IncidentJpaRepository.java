@@ -20,4 +20,7 @@ public interface IncidentJpaRepository extends JpaRepository<IncidentEntity, Lon
 	@Query("DELETE FROM IncidentEntity i WHERE i.id = :id")
 	int deleteByIdAndReturnCount(@Param("id") Long id);
 
+	@Modifying
+	@Query("UPDATE IncidentEntity i SET i.likeCount = :likeCount WHERE i.id = :incidentId")
+	void updateLikeCount(@Param("incidentId") Long incidentId, @Param("likeCount") int likeCount);
 }

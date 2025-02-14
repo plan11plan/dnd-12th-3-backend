@@ -20,4 +20,5 @@ public interface IncidentRepository {
 
 	void deleteById(IncidentEntity id);
 
+	void updateLikeCount(Long incidentId, int likeCount);
 }

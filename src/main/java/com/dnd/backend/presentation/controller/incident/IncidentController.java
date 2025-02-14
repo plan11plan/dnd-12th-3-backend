@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.dnd.backend.application.incident.CreateIncidentLikeUseCase;
 import com.dnd.backend.application.incident.CreateIncidentUseCase;
 import com.dnd.backend.application.incident.DeleteIncidentUseCase;
 import com.dnd.backend.application.incident.GetIncidentsByCursorUseCase;
@@ -43,6 +44,15 @@ public class IncidentController {
 	private final GetNearIncidentsUseCase getNearIncidentsUsecase;
 	private final IncidentReadService incidentReadService;
 	private final DeleteIncidentUseCase deleteIncidentUseCase;
+	private final CreateIncidentLikeUseCase createIncidentLikeUseCase;
+
+	@PostMapping("/{incidentId}/like/v1")
+	public void createIncidentLike(
+		@PathVariable("incidentId") Long incidentId,
+		@RequestParam("userId") Long userId
+	) {
+		createIncidentLikeUseCase.execute(incidentId, userId);
+	}
 
 	@GetMapping("/test/findAll")
 	public List<IncidentEntity> createIncident() {

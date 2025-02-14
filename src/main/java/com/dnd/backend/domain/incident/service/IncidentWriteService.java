@@ -11,6 +11,7 @@ import com.dnd.backend.domain.incident.entity.IncidentEntity;
 import com.dnd.backend.domain.incident.entity.category.DisasterCategory;
 import com.dnd.backend.domain.incident.exception.IncidentNotFoundException;
 import com.dnd.backend.domain.incident.exception.InvalidDescriptionException;
+import com.dnd.backend.domain.incident.repository.IncidentLikeRepository;
 import com.dnd.backend.domain.incident.repository.IncidentRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class IncidentWriteService {
+	private final IncidentLikeRepository incidentLikeRepository;
 	private final IncidentRepository incidentRepository;
 	private final GeocodingService geocodingService;
 
