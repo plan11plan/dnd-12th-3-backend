@@ -8,35 +8,30 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dnd.backend.application.incident.ToggleLikeIncidentUsecase;
 import com.dnd.backend.domain.incident.service.IncidentLikeReadService;
-import com.dnd.backend.domain.incident.service.IncidentLikeWriteService;
 
 import lombok.RequiredArgsConstructor;
 
+@RequestMapping("/api/incidents")
+
 @RestController
-@RequestMapping("/api/incidents/{incidentId}/likes")
 @RequiredArgsConstructor
 public class IncidentLikeController {
 
-	private final IncidentLikeWriteService incidentLikeWriteService;
 	private final IncidentLikeReadService incidentLikeReadService;
+	private final ToggleLikeIncidentUsecase toggleLikeIncidentUsecase;
 
-	/**
-	 * 사건사고 좋아요 추가
-	 */
-	@PostMapping
-	public ResponseEntity<String> likeIncident(
-		@PathVariable Long incidentId,
-		@RequestParam Long writerId // 좋아요를 누르는 사용자 ID
-	) {
-		incidentLikeWriteService.like(writerId, incidentId);
-		return ResponseEntity.ok("👍 좋아요가 추가되었습니다.");
+	@PostMapping("/{incidentId}/likes/toggle")
+	public String toggleLike(@PathVariable Long incidentId, @RequestParam Long userId) {
+		return toggleLikeIncidentUsecase.execute(userId, incidentId);
 	}
 
 	/**
-	 * 사건사고 좋아요 개수 조회
+	 * 현재 좋아요 수 조회 API
+	 * 요청 예: GET /api/incidents/1/likes/count
 	 */
-	@GetMapping("/count")
+	@GetMapping("/{incidentId}/likes/count")
 	public ResponseEntity<Integer> getLikeCount(@PathVariable Long incidentId) {
 		int likeCount = incidentLikeReadService.getLikeCount(incidentId);
 		return ResponseEntity.ok(likeCount);

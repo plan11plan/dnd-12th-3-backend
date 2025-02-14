@@ -1,6 +1,6 @@
 package com.dnd.backend.application.incident;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.dnd.backend.domain.incident.service.IncidentLikeWriteService;
 import com.dnd.backend.domain.incident.service.IncidentReadService;
@@ -8,18 +8,17 @@ import com.dnd.backend.domain.tobeUser.UserReadService;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@Component
 @RequiredArgsConstructor
-public class CreateIncidentLikeUseCase {
-	private final IncidentReadService incidentReadService;
+public class ToggleLikeIncidentUsecase {
 	private final UserReadService userReadService;
+	private final IncidentReadService incidentReadService;
 	private final IncidentLikeWriteService incidentLikeWriteService;
 
-	public void execute(Long incidentId, Long userId) {
+	public String execute(Long userId, Long incidentId) {
 		var incident = incidentReadService.getIncident(incidentId);
 		var user = userReadService.getUser(userId);
-		// incidentLikeWriteService.create(incident, user);
+		return incidentLikeWriteService.toggleLike(user.getId(), incident.getId()).toString();
 
 	}
 }
-
