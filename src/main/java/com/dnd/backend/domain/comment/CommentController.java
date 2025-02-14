@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dnd.backend.domain.comment.usecase.CreateCommentReplyUsecase;
 import com.dnd.backend.domain.comment.usecase.CreateCommentUsecase;
+import com.dnd.backend.domain.comment.usecase.DeleteCommentUsecase;
 import com.dnd.backend.domain.comment.usecase.UpdateCommentUsecase;
 
 import lombok.Data;
@@ -29,6 +30,7 @@ public class CommentController {
 	private final CreateCommentUsecase createCommentUsecase;
 	private final CreateCommentReplyUsecase createCommentReplyUsecase;
 	private final UpdateCommentUsecase updateCommentUsecase;
+	private final DeleteCommentUsecase deleteCommentUsecase;
 
 	@PostMapping
 	public void createComment(
@@ -53,15 +55,9 @@ public class CommentController {
 		updateCommentUsecase.execute(incidentId, commentId, request.getWriterId(), request.getContent());
 	}
 
-	/**
-	 * 댓글 삭제
-	 */
 	@DeleteMapping("/{commentId}")
-	public ResponseEntity<Void> deleteComment(
-		@PathVariable Long incidentId,
-		@PathVariable Long commentId) {
-		commentUseCase.deleteComment(commentId);
-		return ResponseEntity.noContent().build();
+	public void deleteComment(@PathVariable Long incidentId, @PathVariable Long commentId) {
+		deleteCommentUsecase.execute(incidentId, commentId);
 	}
 
 	/**
