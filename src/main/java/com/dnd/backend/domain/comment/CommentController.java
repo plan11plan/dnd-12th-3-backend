@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.dnd.backend.domain.comment.usecase.CreateCommentReplyUsecase;
 import com.dnd.backend.domain.comment.usecase.CreateCommentUsecase;
 import com.dnd.backend.domain.comment.usecase.DeleteCommentUsecase;
+import com.dnd.backend.domain.comment.usecase.GetCommentUsecase;
+import com.dnd.backend.domain.comment.usecase.GetCommentsUsecase;
 import com.dnd.backend.domain.comment.usecase.UpdateCommentUsecase;
 
 import lombok.Data;
@@ -26,11 +28,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CommentController {
 
-	private final CommentUseCase commentUseCase;
 	private final CreateCommentUsecase createCommentUsecase;
 	private final CreateCommentReplyUsecase createCommentReplyUsecase;
 	private final UpdateCommentUsecase updateCommentUsecase;
 	private final DeleteCommentUsecase deleteCommentUsecase;
+	private final GetCommentsUsecase getCommentsUsecase;
+	private final GetCommentUsecase getCommentUsecase;
 
 	@PostMapping
 	public void createComment(
@@ -67,7 +70,7 @@ public class CommentController {
 	public ResponseEntity<CommentResponse> getComment(
 		@PathVariable Long incidentId,
 		@PathVariable Long commentId) {
-		CommentEntity comment = commentUseCase.getComment(commentId);
+		CommentEntity comment = getCommentUsecase.execute(commentId);
 		return ResponseEntity.ok(new CommentResponse(comment));
 	}
 
@@ -76,7 +79,7 @@ public class CommentController {
 	 */
 	@GetMapping
 	public ResponseEntity<List<CommentResponse>> getCommentsByIncident(@PathVariable Long incidentId) {
-		List<CommentEntity> comments = commentUseCase.getCommentsByIncident(incidentId);
+		List<CommentEntity> comments = getCommentsUsecase.execute(incidentId);
 		List<CommentResponse> responses = comments.stream()
 			.map(CommentResponse::new)
 			.collect(Collectors.toList());
