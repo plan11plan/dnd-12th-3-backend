@@ -44,6 +44,8 @@ public class IncidentEntity extends BaseTimeEntity {
 	private double pointY;
 	private String roadNameAddress;
 
+	private int likeCount; // 좋아요 수 필드 추가
+
 	@Builder
 	public IncidentEntity(
 		Long writerId,
@@ -59,6 +61,7 @@ public class IncidentEntity extends BaseTimeEntity {
 		this.pointX = pointX;
 		this.pointY = pointY;
 		this.roadNameAddress = roadNameAddress;
+		this.likeCount = 0;
 	}
 
 	public final IncidentEntity updateDetails(
@@ -73,4 +76,8 @@ public class IncidentEntity extends BaseTimeEntity {
 			.build();
 	}
 
+	// 좋아요 수 업데이트 메서드 추가
+	public void updateLikeCount(int likeCount) {
+		this.likeCount = likeCount;
+	}
 }

@@ -50,4 +50,9 @@ public class IncidentRepositoryImpl implements IncidentRepository {
 		incidentJpaRepository.delete(incidentEntity);
 	}
 
+	@Override
+	public void updateLikeCount(Long incidentId, int likeCount) {
+		incidentJpaRepository.updateLikeCount(incidentId, likeCount);
+	}
+
 }
