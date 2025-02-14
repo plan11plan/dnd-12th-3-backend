@@ -1,6 +1,8 @@
 package com.dnd.backend.domain.incident.entity;
 
-import java.time.LocalDateTime;
+import static com.dnd.backend.domain.incident.entity.LikeStatus.*;
+
+import com.dnd.backend.support.auditing.BaseTimeEntity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -21,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Builder(toBuilder = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class IncidentLikeEntity {
+public class IncidentLikeEntity extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,13 +36,26 @@ public class IncidentLikeEntity {
 	@Enumerated(EnumType.STRING)
 	private LikeStatus likeStatus;
 
-	private LocalDateTime createdAt;
-
 	@Builder
 	public IncidentLikeEntity(Long writerId, Long incidentId, LikeStatus likeStatus) {
 		this.writerId = writerId;
 		this.incidentId = incidentId;
 		this.likeStatus = likeStatus;
-		this.createdAt = LocalDateTime.now();
+	}
+
+	public void setLikeStatus(LikeStatus likeStatus) {
+		this.likeStatus = likeStatus;
+	}
+
+	public void toLike() {
+		this.likeStatus = LIKE;
+	}
+
+	public void toUnLike() {
+		this.likeStatus = UNLIKE;
+	}
+
+	public boolean isLike() {
+		return this.likeStatus == LIKE;
 	}
 }
