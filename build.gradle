@@ -28,6 +28,11 @@ ext {
 }
 dependencies {
     implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:${springCloudAwsVersion}")
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'io.awspring.cloud:spring-cloud-aws-starter-s3'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
