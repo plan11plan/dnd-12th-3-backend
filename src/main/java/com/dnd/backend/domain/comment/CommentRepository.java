@@ -1,13 +1,36 @@
 package com.dnd.backend.domain.comment;
 
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
 
-	// 특정 게시글에 대한 상위(대댓글이 아닌) 댓글 목록 조회 (생성일 순 정렬)
 	List<CommentEntity> findByIncidentIdAndParentIsNullOrderByCreatedAtAsc(Long incidentId);
+
+	Optional<List<CommentEntity>> findAllByIncidentIdAndParentIsNullAndIdLessThanOrderByIdDesc(
+		Long incidentId, Long id, Pageable pageable);
+
+	Optional<List<CommentEntity>> findAllByIncidentIdAndParentIsNullOrderByIdDesc(
+		Long incidentId, Pageable pageable);
+
+	@Query("select c.id from CommentEntity c " +
+		"where c.incidentId = :incidentId and c.parent is null " +
+		"and (:cursor is null or c.id < :cursor) " +
+		"order by c.id desc")
+	List<Long> findParentCommentIds(
+		@Param("incidentId") Long incidentId,
+		@Param("cursor") Long cursor,
+		Pageable pageable);
+
+	@Query("select distinct c from CommentEntity c " +
+		"left join fetch c.children " +
+		"where c.id in :parentIds")
+	List<CommentEntity> findParentCommentsWithChildrenByIds(@Param("parentIds") List<Long> parentIds);
 }
