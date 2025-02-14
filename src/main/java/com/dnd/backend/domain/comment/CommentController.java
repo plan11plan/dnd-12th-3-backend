@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dnd.backend.domain.comment.usecase.CreateCommentReplyUsecase;
+import com.dnd.backend.domain.comment.usecase.CreateCommentUsecase;
+
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -22,29 +25,28 @@ import lombok.RequiredArgsConstructor;
 public class CommentController {
 
 	private final CommentUseCase commentUseCase;
+	private final CreateCommentUsecase createCommentUsecase;
+	private final CreateCommentReplyUsecase createCommentReplyUsecase;
 
 	/**
 	 * 게시글 댓글 생성
 	 */
 	@PostMapping
-	public ResponseEntity<CommentResponse> createComment(
+	public void createComment(
 		@PathVariable Long incidentId,
 		@RequestBody CreateCommentRequest request) {
-		CommentEntity comment = commentUseCase.createComment(incidentId, request.getWriterId(), request.getContent());
-		return ResponseEntity.ok(new CommentResponse(comment));
+		createCommentUsecase.execute(incidentId, request.getWriterId(), request.getContent());
 	}
 
 	/**
 	 * 게시글의 대댓글(답글) 생성
 	 */
 	@PostMapping("/{parentId}/replies")
-	public ResponseEntity<CommentResponse> createReply(
+	public void createCommentReply(
 		@PathVariable Long incidentId,
 		@PathVariable Long parentId,
 		@RequestBody CreateCommentRequest request) {
-		CommentEntity reply = commentUseCase.createReply(incidentId, request.getWriterId(), request.getContent(),
-			parentId);
-		return ResponseEntity.ok(new CommentResponse(reply));
+		createCommentReplyUsecase.execute(incidentId, request.getWriterId(), request.getContent(), parentId);
 	}
 
 	/**
