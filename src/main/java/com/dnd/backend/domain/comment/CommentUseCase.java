@@ -12,10 +12,6 @@ public class CommentUseCase {
 
 	private final CommentService commentService;
 
-	public CommentEntity createComment(Long incidentId, Long writerId, String content) {
-		return commentService.createComment(incidentId, writerId, content);
-	}
-
 	public CommentEntity createReply(Long incidentId, Long writerId, String content, Long parentId) {
 		return commentService.createReply(incidentId, writerId, content, parentId);
 	}
