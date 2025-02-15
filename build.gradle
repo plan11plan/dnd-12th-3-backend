@@ -42,6 +42,7 @@ dependencies {
     implementation platform("org.hibernate:hibernate-spatial:${hibernateSpatialVersion}")
     implementation 'org.locationtech.jts:jts-core:1.19.0'
 
+    runtimeOnly 'org.springframework.boot:spring-boot-devtools'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2:2.2.224'
     annotationProcessor 'org.projectlombok:lombok'

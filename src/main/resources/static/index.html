@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Google Login Test</title>
+    <!-- Google Identity Services 라이브러리 로드 -->
+    <script async defer src="https://accounts.google.com/gsi/client"></script>
+</head>
+<body>
+<h1>Google Login Test</h1>
+
+<!-- Google Sign-In 버튼 -->
+<div data-callback="handleCredentialResponse"
+     data-client_id="817554415395-4sf5r7gg1pnm8vhtht7etkvo36266edh.apps.googleusercontent.com"
+     data-context="signin"
+     data-ux_mode="popup"
+     id="g_id_onload">
+</div>
+<div class="g_id_signin"
+     data-logo_alignment="left"
+     data-shape="rectangular"
+     data-size="large"
+     data-text="signin_with"
+     data-theme="outline"
+     data-type="standard">
+</div>
+
+<script>
+    // 사용자가 로그인에 성공하면 이 콜백이 호출됩니다.
+    function handleCredentialResponse(response) {
+        console.log("Encoded JWT ID token: " + response.credential);
+
+        // 백엔드로 ID 토큰 전송
+        fetch("https://localhost:8443/api/auth/oauth/google", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({token: response.credential})
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log("Backend response:", data);
+                alert("Login successful!\nResponse: " + JSON.stringify(data));
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Error: " + error);
+            });
+    }
+</script>
+</body>
+</html>
