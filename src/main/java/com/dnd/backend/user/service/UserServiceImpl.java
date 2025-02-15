@@ -2,7 +2,6 @@ package com.dnd.backend.user.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -18,14 +17,15 @@ import com.dnd.backend.user.repository.AddressRepository;
 import com.dnd.backend.user.repository.UserRepository;
 import com.dnd.backend.user.security.UserPrincipal;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-	@Autowired
-	private UserRepository userRepository;
-
-	@Autowired
-	private AddressRepository addressRepository;
+	private final UserRepository userRepository;
+	private final AddressRepository addressRepository;
+	private final SecurityService securityService;
 
 	// 현재 인증된 사용자 조회
 	private User getAuthenticatedUser() {
@@ -50,33 +50,39 @@ public class UserServiceImpl implements UserService {
 		return "User account deleted successfully";
 	}
 
-	@Override
 	@Transactional
 	public String addAddress(AddressDTO addressDTO) {
-		User user = getAuthenticatedUser();
+		User user = securityService.getAuthenticatedUser();
 		if (user.getAddresses().size() >= 2) {
 			throw new BadRequestException("Cannot add more than 2 addresses");
 		}
-		Address address = new Address();
-		address.setTitle(addressDTO.getTitle());
-		address.setLatitude(addressDTO.getLatitude());
-		address.setLongitude(addressDTO.getLongitude());
-		address.setUser(user);
+
+		Address address = Address.builder()
+			.title(addressDTO.getTitle())
+			.latitude(addressDTO.getLatitude())
+			.longitude(addressDTO.getLongitude())
+			.user(user)
+			.build();
+
+		user.addAddress(address);
 		addressRepository.save(address);
 		return "Address added successfully";
 	}
 
-	@Override
 	@Transactional
 	public String deleteAddress(Long addressId) {
-		User user = getAuthenticatedUser();
+		User user = securityService.getAuthenticatedUser();
 		Address address = addressRepository.findById(addressId)
 			.orElseThrow(() -> new ResourceNotFoundException("Address not found"));
+
 		if (!address.getUser().getId().equals(user.getId())) {
 			throw new UnauthorizedException("Not authorized to delete this address");
 		}
+
+		user.removeAddress(address);
 		addressRepository.delete(address);
 		return "Address deleted successfully";
+
 	}
 
 	@Override

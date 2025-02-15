@@ -37,23 +37,21 @@ public class UserController {
 		return ResponseEntity.ok(message);
 	}
 
-	// 주소 등록 (최대 2개)
+	@GetMapping("/all")
+	public ResponseEntity<List<User>> getAllUsers() {
+		List<User> users = userService.getAllUsers();
+		return ResponseEntity.ok(users);
+	}
+
 	@PostMapping("/address")
 	public ResponseEntity<?> addAddress(@RequestBody AddressDTO addressDTO) {
 		String message = userService.addAddress(addressDTO);
 		return ResponseEntity.ok(message);
 	}
 
-	// 주소 삭제
 	@DeleteMapping("/address/{addressId}")
 	public ResponseEntity<?> deleteAddress(@PathVariable Long addressId) {
 		String message = userService.deleteAddress(addressId);
 		return ResponseEntity.ok(message);
-	}
-
-	@GetMapping("/all")
-	public ResponseEntity<List<User>> getAllUsers() {
-		List<User> users = userService.getAllUsers();
-		return ResponseEntity.ok(users);
 	}
 }
