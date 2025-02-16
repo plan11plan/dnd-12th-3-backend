@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl {
 
 	private final UserRepository userRepository;
 	private final AddressRepository addressRepository;
@@ -26,14 +26,12 @@ public class UserServiceImpl implements UserService {
 
 	// 현재 인증된 사용자 조회
 
-	@Override
 	public User getCurrentUser() {
 		User user = securityService.getAuthenticatedUser();
 		user.setPassword(null); // 비밀번호 노출 방지
 		return user;
 	}
 
-	@Override
 	@Transactional
 	public String deleteAccount() {
 		User user = securityService.getAuthenticatedUser();
@@ -76,7 +74,6 @@ public class UserServiceImpl implements UserService {
 
 	}
 
-	@Override
 	public List<User> getAllUsers() {
 		List<User> users = userRepository.findAll();
 		users.forEach(user -> user.setPassword(null));

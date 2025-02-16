@@ -1,6 +1,5 @@
 package com.dnd.backend.user.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,14 +9,18 @@ import org.springframework.web.bind.annotation.RestController;
 import com.dnd.backend.user.dto.LoginRequest;
 import com.dnd.backend.user.dto.RegistrationRequest;
 import com.dnd.backend.user.dto.SocialLoginRequest;
-import com.dnd.backend.user.service.AuthService;
+import com.dnd.backend.user.service.AuthServiceImpl;
+import com.dnd.backend.user.service.SocialLoginService;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/auth")
 public class AuthController {
 
-	@Autowired
-	private AuthService authService;
+	private final AuthServiceImpl authService;
+	private final SocialLoginService socialLoginService;
 
 	// 일반 회원가입
 	@PostMapping("/signup")
@@ -42,12 +45,12 @@ public class AuthController {
 	// 구글 소셜 로그인 (안드로이드가 전달한 ID 토큰)
 	@PostMapping("/oauth/google")
 	public ResponseEntity<?> googleLogin(@RequestBody SocialLoginRequest request) {
-		return ResponseEntity.ok(authService.loginWithGoogle(request));
+		return ResponseEntity.ok(socialLoginService.loginWithGoogle(request));
 	}
 
 	// 카카오 소셜 로그인 (안드로이드가 전달한 Access Token)
 	@PostMapping("/oauth/kakao")
 	public ResponseEntity<?> kakaoLogin(@RequestBody SocialLoginRequest request) {
-		return ResponseEntity.ok(authService.loginWithKakao(request));
+		return ResponseEntity.ok(socialLoginService.loginWithKakao(request));
 	}
 }
