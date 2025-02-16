@@ -38,19 +38,20 @@ public class User {
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	private SocialType socialType = SocialType.LOCAL;
+	private SocialLoginType socialLoginType = SocialLoginType.LOCAL;
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Address> addresses = new ArrayList<>();
 
 	// 모든 필드를 포함한 생성자 (빌더 패턴을 위해 필요)
 	@Builder
-	public User(Long id, String name, String email, String password, SocialType socialType, List<Address> addresses) {
+	public User(Long id, String name, String email, String password, SocialLoginType socialLoginType,
+		List<Address> addresses) {
 		this.id = id;
 		this.name = name;
 		this.email = email;
 		this.password = password;
-		this.socialType = socialType;
+		this.socialLoginType = socialLoginType;
 		this.addresses = addresses != null ? addresses : new ArrayList<>();
 	}
 

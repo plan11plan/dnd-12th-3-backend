@@ -10,7 +10,7 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import com.dnd.backend.user.entity.SocialType;
+import com.dnd.backend.user.entity.SocialLoginType;
 import com.dnd.backend.user.entity.User;
 import com.dnd.backend.user.repository.UserRepository;
 
@@ -28,17 +28,17 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
 		// email과 socialType을 final로 선언
 		final String email;
-		final SocialType socialType;
+		final SocialLoginType socialLoginType;
 
 		if (registrationId.equalsIgnoreCase("kakao")) {
-			socialType = SocialType.KAKAO;
+			socialLoginType = SocialLoginType.KAKAO;
 			Map<String, Object> kakaoAccount = (Map<String, Object>)attributes.get("kakao_account");
 			email = (String)kakaoAccount.get("email");
 		} else if (registrationId.equalsIgnoreCase("google")) {
-			socialType = SocialType.GOOGLE;
+			socialLoginType = SocialLoginType.GOOGLE;
 			email = (String)attributes.get("email");
 		} else {
-			socialType = SocialType.LOCAL;
+			socialLoginType = SocialLoginType.LOCAL;
 			email = null;
 		}
 
@@ -50,7 +50,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 			User newUser = User.builder()
 				.email(email)
 				.password("")
-				.socialType(socialType)
+				.socialLoginType(socialLoginType)
 				.build();
 			return userRepository.save(newUser);
 		});
