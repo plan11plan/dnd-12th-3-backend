@@ -21,6 +21,7 @@ import com.dnd.backend.user.entity.User;
 import com.dnd.backend.user.exception.BadRequestException;
 import com.dnd.backend.user.repository.UserRepository;
 import com.dnd.backend.user.security.JwtTokenProvider;
+import com.dnd.backend.user.security.UserPrincipal;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -102,8 +103,12 @@ public class AuthServiceImpl implements AuthService {
 			return userRepository.save(newUser);
 		});
 
-		Authentication authentication = new UsernamePasswordAuthenticationToken(user.getEmail(), null, null);
+		// 수정된 부분: UserPrincipal 객체를 principal로 사용
+		UserPrincipal principal = UserPrincipal.create(user);
+		Authentication authentication = new UsernamePasswordAuthenticationToken(principal, null,
+			principal.getAuthorities());
 		String jwt = tokenProvider.generateToken(authentication);
+		System.out.println(jwt);
 		return new AuthResponse(jwt);
 	}
 
@@ -139,7 +144,10 @@ public class AuthServiceImpl implements AuthService {
 				return userRepository.save(newUser);
 			});
 
-			Authentication authentication = new UsernamePasswordAuthenticationToken(user.getEmail(), null, null);
+			// 수정된 부분: UserPrincipal 객체를 principal로 사용
+			UserPrincipal principal = UserPrincipal.create(user);
+			Authentication authentication = new UsernamePasswordAuthenticationToken(principal, null,
+				principal.getAuthorities());
 			String jwt = tokenProvider.generateToken(authentication);
 			return new AuthResponse(jwt);
 

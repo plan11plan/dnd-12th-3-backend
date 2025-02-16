@@ -40,7 +40,6 @@ public class User {
 	@Column(nullable = false)
 	private SocialType socialType = SocialType.LOCAL;
 
-	// 회원이 등록한 주소 (최대 2개: 서비스 단에서 제한)
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Address> addresses = new ArrayList<>();
 
@@ -55,4 +54,16 @@ public class User {
 		this.addresses = addresses != null ? addresses : new ArrayList<>();
 	}
 
+	public void addAddress(Address address) {
+		if (this.addresses.size() >= 2) {
+			throw new IllegalStateException("Cannot add more than 2 addresses");
+		}
+		this.addresses.add(address);
+		address.setUser(this);
+	}
+
+	public void removeAddress(Address address) {
+		this.addresses.remove(address);
+		address.setUser(null);
+	}
 }
