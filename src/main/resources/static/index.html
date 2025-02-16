@@ -31,7 +31,7 @@
         console.log("Encoded JWT ID token: " + response.credential);
 
         // 백엔드로 ID 토큰 전송
-        fetch("https://localhost:8443/api/auth/oauth/google", {
+        fetch("https://localhost:8443/api/oauth/google", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

@@ -10,31 +10,32 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import com.dnd.backend.user.entity.User;
+import com.dnd.backend.user.entity.MemberEntity;
 
 import lombok.Getter;
 
 @Getter
-public class UserPrincipal implements UserDetails, OAuth2User {
+public class CustomeUserDetails implements UserDetails, OAuth2User {
 	private Long id;
 	private String email;
 	private String password;
 	private Collection<? extends GrantedAuthority> authorities;
 	private Map<String, Object> attributes;
 
-	public UserPrincipal(Long id, String email, String password, Collection<? extends GrantedAuthority> authorities) {
+	public CustomeUserDetails(Long id, String email, String password,
+		Collection<? extends GrantedAuthority> authorities) {
 		this.id = id;
 		this.email = email;
 		this.password = password;
 		this.authorities = authorities;
 	}
 
-	public static UserPrincipal create(User user) {
+	public static CustomeUserDetails create(MemberEntity memberEntity) {
 		List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
-		return new UserPrincipal(
-			user.getId(),
-			user.getEmail(),
-			user.getPassword(),
+		return new CustomeUserDetails(
+			memberEntity.getId(),
+			memberEntity.getEmail(),
+			memberEntity.getPassword(),
 			authorities
 		);
 	}
@@ -77,5 +78,16 @@ public class UserPrincipal implements UserDetails, OAuth2User {
 	@Override
 	public String getName() {
 		return String.valueOf(id);
+	}
+
+	@Override
+	public String toString() {
+		return "CustomeUserDetails{" +
+			"id=" + id +
+			", email='" + email + '\'' +
+			", password='" + password + '\'' +
+			", authorities=" + authorities +
+			", attributes=" + attributes +
+			'}';
 	}
 }

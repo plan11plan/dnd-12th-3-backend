@@ -2,31 +2,31 @@ package com.dnd.backend.user.config;
 
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.dnd.backend.user.exception.UnauthorizedException;
 import com.dnd.backend.user.security.CustomUserDetailsService;
+import com.dnd.backend.user.security.CustomeUserDetails;
 import com.dnd.backend.user.security.JwtTokenProvider;
-import com.dnd.backend.user.security.UserPrincipal;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-	@Autowired
-	private JwtTokenProvider tokenProvider;
-
-	@Autowired
-	private CustomUserDetailsService customUserDetailsService;
+	private final JwtTokenProvider tokenProvider;
+	private final CustomUserDetailsService customUserDetailsService;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request,
@@ -37,12 +37,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 		if (StringUtils.hasText(token) && tokenProvider.validateToken(token)) {
 			Long userId = tokenProvider.getUserIdFromJWT(token);
-			UserPrincipal userDetails = (UserPrincipal)customUserDetailsService.loadUserById(userId);
-
+			UserDetails userDetails = customUserDetailsService.loadUserById(userId);
+			// 만약 반환된 값이 UserPrincipal이 아니라면 (예: "anonymousUser" 등) 예외 발생
+			if (!(userDetails instanceof CustomeUserDetails)) {
+				throw new UnauthorizedException("유효한 인증 토큰이 필요합니다.");
+			}
+			CustomeUserDetails principal = (CustomeUserDetails)userDetails;
 			UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-				userDetails, null, userDetails.getAuthorities());
+				principal, null, principal.getAuthorities());
 			authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 		}
 		filterChain.doFilter(request, response);

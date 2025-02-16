@@ -20,11 +20,11 @@ public class JwtTokenProvider {
 	private int jwtExpirationMs;
 
 	public String generateToken(org.springframework.security.core.Authentication authentication) {
-		// authentication 객체가 UserPrincipal 혹은 email String을 포함할 수 있음
+		// authentication 객체가 CustomeUserDetails 혹은 email String을 포함할 수 있음
 		Object principal = authentication.getPrincipal();
 		String subject;
-		if (principal instanceof UserPrincipal) {
-			subject = Long.toString(((UserPrincipal)principal).getId());
+		if (principal instanceof CustomeUserDetails) {
+			subject = Long.toString(((CustomeUserDetails)principal).getId());
 		} else {
 			subject = principal.toString();
 		}

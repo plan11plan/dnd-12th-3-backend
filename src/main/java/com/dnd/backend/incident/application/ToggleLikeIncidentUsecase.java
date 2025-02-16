@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 import com.dnd.backend.incident.service.IncidentLikeWriteService;
 import com.dnd.backend.incident.service.IncidentReadService;
-import com.dnd.backend.tobeUser.UserReadService;
+import com.dnd.backend.user.service.d.UserReadService;
 
 import lombok.RequiredArgsConstructor;
 
