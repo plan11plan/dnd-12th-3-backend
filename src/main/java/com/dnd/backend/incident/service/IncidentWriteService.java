@@ -20,14 +20,14 @@ public class IncidentWriteService {
 	private final GeocodingService geocodingService;
 
 	@Transactional
-	public Long create(WriteIncidentCommand command) {
+	public Long create(Long writerId, WriteIncidentCommand command) {
 		var disasterGroup = DisasterCategory.mapToDisasterGroup(command.disasterGroup());
 
 		var roadNameAddress = geocodingService.getRoadNameAddress(command.pointX(), command.pointY());
 
 		var incidentEntity = IncidentEntity.builder()
 			.roadNameAddress(roadNameAddress)
-			.writerId(command.writerId())
+			.writerId(writerId)
 			.description(command.description())
 			.disasterCategory(disasterGroup)
 			.pointX(command.pointX())

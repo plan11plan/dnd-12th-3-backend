@@ -28,6 +28,8 @@ import com.dnd.backend.incident.dto.WriteIncidentCommand;
 import com.dnd.backend.incident.entity.IncidentEntity;
 import com.dnd.backend.incident.service.IncidentReadService;
 import com.dnd.backend.support.util.CursorRequest;
+import com.dnd.backend.user.entity.MemberEntity;
+import com.dnd.backend.user.security.customAuthenticationPrincipal.AuthUser;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -52,13 +54,14 @@ public class IncidentController {
 	@PostMapping(consumes = {"multipart/form-data"})
 	public void createIncident(
 		@RequestPart("incidentData") WriteIncidentCommand command,
-		@RequestPart(value = "files", required = false) List<MultipartFile> files) {
+		@RequestPart(value = "files", required = false) List<MultipartFile> files,
+		@AuthUser MemberEntity memberEntity) {
 
 		//TODO : Null처리 DTO 캡슐화하기
 		if (files == null) {
 			files = Collections.emptyList();
 		}
-		createIncidentUseCase.execute(command, files);
+		createIncidentUseCase.execute(memberEntity, command, files);
 	}
 
 	@PatchMapping("/{incidentId}")

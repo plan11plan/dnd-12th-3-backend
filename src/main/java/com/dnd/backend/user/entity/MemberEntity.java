@@ -24,6 +24,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class MemberEntity {
 	@Id
+	@Column(name = "member_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
@@ -40,7 +41,7 @@ public class MemberEntity {
 	@Column(nullable = false)
 	private SocialLoginType socialLoginType = SocialLoginType.LOCAL;
 
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "memberEntity", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Address> addresses = new ArrayList<>();
 
 	// 모든 필드를 포함한 생성자 (빌더 패턴을 위해 필요)

@@ -8,5 +8,5 @@ import com.dnd.backend.user.entity.Address;
 import com.dnd.backend.user.entity.MemberEntity;
 
 public interface AddressRepository extends JpaRepository<Address, Long> {
-	List<Address> findByUser(MemberEntity memberEntity);
+	List<Address> findByMemberEntity(MemberEntity memberEntity);
 }
