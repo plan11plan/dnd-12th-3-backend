@@ -23,15 +23,16 @@ public class IncidentWriteService {
 	public Long create(Long writerId, WriteIncidentCommand command) {
 		var disasterGroup = DisasterCategory.mapToDisasterGroup(command.disasterGroup());
 
-		var roadNameAddress = geocodingService.getRoadNameAddress(command.pointX(), command.pointY());
+		var roadNameAddress = geocodingService.getRoadNameAddress(command.latitude(), command.longitude());
 
 		var incidentEntity = IncidentEntity.builder()
-			.roadNameAddress(roadNameAddress)
+			.locationInfoName(roadNameAddress)
 			.writerId(writerId)
 			.description(command.description())
+			.locationInfoName(command.locationInfoName())
 			.disasterCategory(disasterGroup)
-			.pointX(command.pointX())
-			.pointY(command.pointY())
+			.latitude(command.latitude())
+			.longitude(command.longitude())
 			.build();
 
 		return incidentRepository.save(incidentEntity).getId();

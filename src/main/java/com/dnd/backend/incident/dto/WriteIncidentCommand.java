@@ -7,9 +7,10 @@ public record WriteIncidentCommand(
 	String description,
 
 	String disasterGroup,
+	String locationInfoName,
 
-	double pointX,
+	double latitude,
 
-	double pointY
+	double longitude
 ) {
 }

@@ -28,7 +28,7 @@ import com.dnd.backend.incident.dto.WriteIncidentCommand;
 import com.dnd.backend.incident.entity.IncidentEntity;
 import com.dnd.backend.incident.service.IncidentReadService;
 import com.dnd.backend.support.util.CursorRequest;
-import com.dnd.backend.user.entity.MemberEntity;
+import com.dnd.backend.user.security.CustomeUserDetails;
 import com.dnd.backend.user.security.customAuthenticationPrincipal.AuthUser;
 
 import jakarta.validation.Valid;
@@ -55,13 +55,14 @@ public class IncidentController {
 	public void createIncident(
 		@RequestPart("incidentData") WriteIncidentCommand command,
 		@RequestPart(value = "files", required = false) List<MultipartFile> files,
-		@AuthUser MemberEntity memberEntity) {
+		@AuthUser CustomeUserDetails customeUserDetails) {
 
 		//TODO : Null처리 DTO 캡슐화하기
 		if (files == null) {
 			files = Collections.emptyList();
 		}
-		createIncidentUseCase.execute(memberEntity, command, files);
+		Long memberId = customeUserDetails.getId();
+		createIncidentUseCase.execute(memberId, command, files);
 	}
 
 	@PatchMapping("/{incidentId}")

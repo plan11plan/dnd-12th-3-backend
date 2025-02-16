@@ -39,10 +39,10 @@ public class IncidentEntity extends BaseTimeEntity {
 	@Enumerated(EnumType.STRING)
 	private DisasterCategory disasterCategory;
 
-	private double pointX;
+	private double latitude;
 
-	private double pointY;
-	private String roadNameAddress;
+	private double longitude;
+	private String locationInfoName;
 
 	private int likeCount; // 좋아요 수 필드 추가
 
@@ -51,16 +51,16 @@ public class IncidentEntity extends BaseTimeEntity {
 		Long writerId,
 		String description,
 		DisasterCategory disasterCategory,
-		double pointX,
-		double pointY,
-		String roadNameAddress
+		double latitude,
+		double longitude,
+		String locationInfoName
 	) {
 		this.writerId = Objects.requireNonNull(writerId);
 		this.description = Objects.requireNonNull(description);
 		this.disasterCategory = Objects.requireNonNull(disasterCategory);
-		this.pointX = pointX;
-		this.pointY = pointY;
-		this.roadNameAddress = roadNameAddress;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.locationInfoName = locationInfoName;
 		this.likeCount = 0;
 	}
 
@@ -71,7 +71,7 @@ public class IncidentEntity extends BaseTimeEntity {
 	) {
 		return this.toBuilder()
 			.description(description)
-			.roadNameAddress(roadNameAddress)
+			.locationInfoName(roadNameAddress)
 			.disasterCategory(disasterCategory)
 			.build();
 	}
