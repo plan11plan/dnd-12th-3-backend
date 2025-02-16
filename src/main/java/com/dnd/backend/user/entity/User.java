@@ -27,13 +27,13 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false, unique = true)
-	private String email;
 	@Column(nullable = false)
 	private String name;
+	@Column(nullable = false, unique = true)
+	private String email;
 
 	// 일반 로그인 시 암호, 소셜 로그인 시엔 빈 문자열 또는 null 사용
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private String password;
 
 	@Enumerated(EnumType.STRING)

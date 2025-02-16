@@ -1,4 +1,4 @@
-package com.dnd.backend.user.service;
+package com.dnd.backend.user.service.oauth;
 
 import java.util.Map;
 
@@ -9,8 +9,8 @@ import com.dnd.backend.user.dto.SocialLoginRequest;
 import com.dnd.backend.user.entity.SocialLoginType;
 import com.dnd.backend.user.entity.User;
 import com.dnd.backend.user.exception.BadRequestException;
-import com.dnd.backend.user.repository.UserRepository;
-import com.dnd.backend.user.security.UserPrincipal;
+import com.dnd.backend.user.security.CustomeUserDetails;
+import com.dnd.backend.user.service.SocialLoginStrategy;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,11 +18,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class GoogleLoginStrategy implements SocialLoginStrategy {
 
-	private final UserRepository userRepository;
 	private final RestTemplate restTemplate;
+	private final UserRegistrationService userRegistrationService; // 별도 서비스 주입
 
 	@Override
-	public UserPrincipal login(SocialLoginRequest request) throws BadRequestException {
+	public CustomeUserDetails login(SocialLoginRequest request) throws BadRequestException {
 		String idToken = request.getToken();
 		String url = "https://oauth2.googleapis.com/tokeninfo?id_token=" + idToken;
 		Map<String, Object> response = restTemplate.getForObject(url, Map.class);
@@ -31,19 +31,13 @@ public class GoogleLoginStrategy implements SocialLoginStrategy {
 			throw new BadRequestException("Invalid Google ID token");
 		}
 
-		String email = (String)response.get("email");
+		// 이메일 정규화: 소문자 변환 및 trim 처리
+		String email = ((String)response.get("email")).toLowerCase().trim();
 		String name = (String)response.get("name");
 
-		User user = userRepository.findByEmail(email).orElseGet(() -> {
-			User newUser = User.builder()
-				.email(email)
-				.name(name)
-				.password("") // 소셜 로그인은 패스워드 미사용
-				.socialLoginType(SocialLoginType.GOOGLE)
-				.build();
-			return userRepository.save(newUser);
-		});
+		// 별도의 트랜잭션을 통해 사용자 등록을 시도
+		User user = userRegistrationService.registerUserIfNotExists(email, name, SocialLoginType.GOOGLE);
 
-		return UserPrincipal.create(user);
+		return CustomeUserDetails.create(user);
 	}
 }

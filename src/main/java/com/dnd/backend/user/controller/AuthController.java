@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.dnd.backend.user.dto.LoginRequest;
 import com.dnd.backend.user.dto.RegistrationRequest;
 import com.dnd.backend.user.service.AuthServiceImpl;
-import com.dnd.backend.user.service.SocialLoginService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 public class AuthController {
 
 	private final AuthServiceImpl authService;
-	private final SocialLoginService socialLoginService;
 
 	// 일반 회원가입
 	@PostMapping("/signup")

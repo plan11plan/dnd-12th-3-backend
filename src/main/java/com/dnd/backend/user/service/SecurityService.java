@@ -9,7 +9,7 @@ import com.dnd.backend.user.entity.User;
 import com.dnd.backend.user.exception.ResourceNotFoundException;
 import com.dnd.backend.user.exception.UnauthorizedException;
 import com.dnd.backend.user.repository.UserRepository;
-import com.dnd.backend.user.security.UserPrincipal;
+import com.dnd.backend.user.security.CustomeUserDetails;
 
 import lombok.RequiredArgsConstructor;
 
@@ -41,12 +41,12 @@ public class SecurityService {
 	}
 
 	private User getUserFromPrincipal(Object principal) {
-		if (!(principal instanceof UserPrincipal)) {
+		if (!(principal instanceof CustomeUserDetails)) {
 			throw new UnauthorizedException(UNAUTHORIZED_MESSAGE);
 		}
 
-		UserPrincipal userPrincipal = (UserPrincipal)principal;
-		return userRepository.findById(userPrincipal.getId())
+		CustomeUserDetails customeUserDetails = (CustomeUserDetails)principal;
+		return userRepository.findById(customeUserDetails.getId())
 			.orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_MESSAGE));
 	}
 }

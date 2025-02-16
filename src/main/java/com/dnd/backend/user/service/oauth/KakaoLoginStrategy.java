@@ -1,12 +1,14 @@
-package com.dnd.backend.user.service;
+package com.dnd.backend.user.service.oauth;
 
 import java.util.Map;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import com.dnd.backend.user.dto.SocialLoginRequest;
@@ -14,7 +16,8 @@ import com.dnd.backend.user.entity.SocialLoginType;
 import com.dnd.backend.user.entity.User;
 import com.dnd.backend.user.exception.BadRequestException;
 import com.dnd.backend.user.repository.UserRepository;
-import com.dnd.backend.user.security.UserPrincipal;
+import com.dnd.backend.user.security.CustomeUserDetails;
+import com.dnd.backend.user.service.SocialLoginStrategy;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,7 +29,8 @@ public class KakaoLoginStrategy implements SocialLoginStrategy {
 	private final RestTemplate restTemplate;
 
 	@Override
-	public UserPrincipal login(SocialLoginRequest request) throws BadRequestException {
+	@Transactional
+	public CustomeUserDetails login(SocialLoginRequest request) throws BadRequestException {
 		String accessToken = request.getToken();
 		String url = "https://kapi.kakao.com/v2/user/me";
 
@@ -40,6 +44,7 @@ public class KakaoLoginStrategy implements SocialLoginStrategy {
 			throw new BadRequestException("Invalid Kakao access token");
 		}
 
+		@SuppressWarnings("unchecked")
 		Map<String, Object> kakaoAccount = (Map<String, Object>)response.get("kakao_account");
 		String email = (String)kakaoAccount.get("email");
 
@@ -47,15 +52,25 @@ public class KakaoLoginStrategy implements SocialLoginStrategy {
 			throw new BadRequestException("Kakao account email not available");
 		}
 
-		User user = userRepository.findByEmail(email).orElseGet(() -> {
-			User newUser = User.builder()
-				.email(email)
-				.password("") // 소셜 로그인은 패스워드 미사용
-				.socialLoginType(SocialLoginType.KAKAO)
-				.build();
-			return userRepository.save(newUser);
-		});
+		// 이메일 정규화: 소문자 변환 및 trim 처리
+		String trimEmail = email.toLowerCase().trim();
 
-		return UserPrincipal.create(user);
+		User user;
+		try {
+			user = userRepository.findByEmail(email).orElseGet(() -> {
+				User newUser = User.builder()
+					.email(trimEmail)
+					.password("") // 소셜 로그인은 패스워드 미사용
+					.socialLoginType(SocialLoginType.KAKAO)
+					.build();
+				return userRepository.save(newUser);
+			});
+		} catch (DataIntegrityViolationException ex) {
+			// 동시성 문제 등으로 이미 등록된 경우, 기존 사용자 조회
+			user = userRepository.findByEmail(email)
+				.orElseThrow(() -> new BadRequestException("User registration failed due to duplicate email."));
+		}
+
+		return CustomeUserDetails.create(user);
 	}
 }

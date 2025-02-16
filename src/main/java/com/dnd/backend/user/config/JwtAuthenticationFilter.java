@@ -12,8 +12,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.dnd.backend.user.exception.UnauthorizedException;
 import com.dnd.backend.user.security.CustomUserDetailsService;
+import com.dnd.backend.user.security.CustomeUserDetails;
 import com.dnd.backend.user.security.JwtTokenProvider;
-import com.dnd.backend.user.security.UserPrincipal;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -39,10 +39,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			Long userId = tokenProvider.getUserIdFromJWT(token);
 			UserDetails userDetails = customUserDetailsService.loadUserById(userId);
 			// 만약 반환된 값이 UserPrincipal이 아니라면 (예: "anonymousUser" 등) 예외 발생
-			if (!(userDetails instanceof UserPrincipal)) {
+			if (!(userDetails instanceof CustomeUserDetails)) {
 				throw new UnauthorizedException("유효한 인증 토큰이 필요합니다.");
 			}
-			UserPrincipal principal = (UserPrincipal)userDetails;
+			CustomeUserDetails principal = (CustomeUserDetails)userDetails;
 			UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
 				principal, null, principal.getAuthorities());
 			authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

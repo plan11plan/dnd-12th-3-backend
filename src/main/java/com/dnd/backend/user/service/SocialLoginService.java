@@ -5,13 +5,12 @@ import java.util.Map;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.dnd.backend.user.dto.AuthResponse;
 import com.dnd.backend.user.dto.SocialLoginRequest;
 import com.dnd.backend.user.exception.BadRequestException;
+import com.dnd.backend.user.security.CustomeUserDetails;
 import com.dnd.backend.user.security.JwtTokenProvider;
-import com.dnd.backend.user.security.UserPrincipal;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,15 +21,15 @@ public class SocialLoginService {
 	private final Map<String, SocialLoginStrategy> socialLoginStrategies;
 	private final JwtTokenProvider tokenProvider;
 
-	@Transactional
 	public AuthResponse login(SocialLoginRequest request, String provider) throws BadRequestException {
 		SocialLoginStrategy strategy = socialLoginStrategies.get(provider + "LoginStrategy");
 		validateNull(provider, strategy);
 
-		UserPrincipal principal = strategy.login(request);
+		CustomeUserDetails principal = strategy.login(request);
 		Authentication authentication = new UsernamePasswordAuthenticationToken(principal, null,
 			principal.getAuthorities());
 		String jwt = tokenProvider.generateToken(authentication);
+		System.out.println(jwt);
 		return new AuthResponse(jwt);
 	}
 

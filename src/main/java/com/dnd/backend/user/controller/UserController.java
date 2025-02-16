@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/user")
 public class UserController {
 
-	private UserServiceImpl userService;
+	private final UserServiceImpl userService;
 
 	// 내 정보 조회
 	@GetMapping("/me")
