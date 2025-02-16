@@ -5,7 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.dnd.backend.user.entity.User;
+import com.dnd.backend.user.entity.MemberEntity;
 import com.dnd.backend.user.exception.ResourceNotFoundException;
 import com.dnd.backend.user.exception.UnauthorizedException;
 import com.dnd.backend.user.repository.UserRepository;
@@ -23,7 +23,7 @@ public class SecurityService {
 
 	private final UserRepository userRepository;
 
-	public User getAuthenticatedUser() {
+	public MemberEntity getAuthenticatedUser() {
 		Authentication authentication = getAuthentication();
 		validateAuthentication(authentication);
 
@@ -40,7 +40,7 @@ public class SecurityService {
 		}
 	}
 
-	private User getUserFromPrincipal(Object principal) {
+	private MemberEntity getUserFromPrincipal(Object principal) {
 		if (!(principal instanceof CustomeUserDetails)) {
 			throw new UnauthorizedException(UNAUTHORIZED_MESSAGE);
 		}

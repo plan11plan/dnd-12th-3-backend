@@ -18,11 +18,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "users")
+@Table(name = "members")
 @Data
 @NoArgsConstructor
 @Builder
-public class User {
+public class MemberEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -45,7 +45,7 @@ public class User {
 
 	// 모든 필드를 포함한 생성자 (빌더 패턴을 위해 필요)
 	@Builder
-	public User(Long id, String name, String email, String password, SocialLoginType socialLoginType,
+	public MemberEntity(Long id, String name, String email, String password, SocialLoginType socialLoginType,
 		List<Address> addresses) {
 		this.id = id;
 		this.name = name;
@@ -60,11 +60,11 @@ public class User {
 			throw new IllegalStateException("Cannot add more than 2 addresses");
 		}
 		this.addresses.add(address);
-		address.setUser(this);
+		address.setMemberEntity(this);
 	}
 
 	public void removeAddress(Address address) {
 		this.addresses.remove(address);
-		address.setUser(null);
+		address.setMemberEntity(null);
 	}
 }

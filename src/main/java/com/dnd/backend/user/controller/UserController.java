@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dnd.backend.user.dto.AddressDTO;
-import com.dnd.backend.user.entity.User;
+import com.dnd.backend.user.entity.MemberEntity;
 import com.dnd.backend.user.service.UserServiceImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -27,8 +27,8 @@ public class UserController {
 	// 내 정보 조회
 	@GetMapping("/me")
 	public ResponseEntity<?> getCurrentUser() {
-		User user = userService.getCurrentUser();
-		return ResponseEntity.ok(user);
+		MemberEntity memberEntity = userService.getCurrentUser();
+		return ResponseEntity.ok(memberEntity);
 	}
 
 	// 회원탈퇴
@@ -39,9 +39,9 @@ public class UserController {
 	}
 
 	@GetMapping("/all")
-	public ResponseEntity<List<User>> getAllUsers() {
-		List<User> users = userService.getAllUsers();
-		return ResponseEntity.ok(users);
+	public ResponseEntity<List<MemberEntity>> getAllUsers() {
+		List<MemberEntity> memberEntities = userService.getAllUsers();
+		return ResponseEntity.ok(memberEntities);
 	}
 
 	@PostMapping("/address")

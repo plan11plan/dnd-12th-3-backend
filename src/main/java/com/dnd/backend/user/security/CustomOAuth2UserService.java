@@ -10,8 +10,8 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import com.dnd.backend.user.entity.MemberEntity;
 import com.dnd.backend.user.entity.SocialLoginType;
-import com.dnd.backend.user.entity.User;
 import com.dnd.backend.user.repository.UserRepository;
 
 @Service
@@ -53,17 +53,17 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 			throw new OAuth2AuthenticationException("Email not found from OAuth2 provider");
 		}
 
-		User user = userRepository.findByEmail(email).orElseGet(() -> {
-			User newUser = User.builder()
+		MemberEntity memberEntity = userRepository.findByEmail(email).orElseGet(() -> {
+			MemberEntity newMemberEntity = MemberEntity.builder()
 				.email(email)
 				.name(name)
 				.password("")
 				.socialLoginType(socialLoginType)
 				.build();
-			return userRepository.save(newUser);
+			return userRepository.save(newMemberEntity);
 		});
 
-		CustomeUserDetails principal = CustomeUserDetails.create(user);
+		CustomeUserDetails principal = CustomeUserDetails.create(memberEntity);
 		principal.setAttributes(attributes);
 		return principal;
 	}

@@ -10,7 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import com.dnd.backend.user.entity.User;
+import com.dnd.backend.user.entity.MemberEntity;
 
 import lombok.Getter;
 
@@ -30,12 +30,12 @@ public class CustomeUserDetails implements UserDetails, OAuth2User {
 		this.authorities = authorities;
 	}
 
-	public static CustomeUserDetails create(User user) {
+	public static CustomeUserDetails create(MemberEntity memberEntity) {
 		List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
 		return new CustomeUserDetails(
-			user.getId(),
-			user.getEmail(),
-			user.getPassword(),
+			memberEntity.getId(),
+			memberEntity.getEmail(),
+			memberEntity.getPassword(),
 			authorities
 		);
 	}

@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.dnd.backend.user.entity.Address;
-import com.dnd.backend.user.entity.User;
+import com.dnd.backend.user.entity.MemberEntity;
 
 public interface AddressRepository extends JpaRepository<Address, Long> {
-	List<Address> findByUser(User user);
+	List<Address> findByUser(MemberEntity memberEntity);
 }

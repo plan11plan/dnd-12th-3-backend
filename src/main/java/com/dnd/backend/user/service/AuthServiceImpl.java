@@ -11,8 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.dnd.backend.user.dto.AuthResponse;
 import com.dnd.backend.user.dto.LoginRequest;
 import com.dnd.backend.user.dto.RegistrationRequest;
+import com.dnd.backend.user.entity.MemberEntity;
 import com.dnd.backend.user.entity.SocialLoginType;
-import com.dnd.backend.user.entity.User;
 import com.dnd.backend.user.repository.UserRepository;
 import com.dnd.backend.user.security.JwtTokenProvider;
 
@@ -32,14 +32,14 @@ public class AuthServiceImpl {
 	public String registerUser(RegistrationRequest request) {
 		userValidator.validateEmail(request.getEmail());
 
-		User user = User.builder()
+		MemberEntity memberEntity = MemberEntity.builder()
 			.email(request.getEmail())
 			.password(passwordEncoder.encode(request.getPassword()))
 			.socialLoginType(SocialLoginType.LOCAL)
 			.build();
 
-		userRepository.save(user);
-		return "User registered successfully";
+		userRepository.save(memberEntity);
+		return "MemberEntity registered successfully";
 	}
 
 	public AuthResponse loginUser(LoginRequest request) {

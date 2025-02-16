@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import com.dnd.backend.user.dto.SocialLoginRequest;
+import com.dnd.backend.user.entity.MemberEntity;
 import com.dnd.backend.user.entity.SocialLoginType;
-import com.dnd.backend.user.entity.User;
 import com.dnd.backend.user.exception.BadRequestException;
 import com.dnd.backend.user.security.CustomeUserDetails;
 import com.dnd.backend.user.service.SocialLoginStrategy;
@@ -36,8 +36,9 @@ public class GoogleLoginStrategy implements SocialLoginStrategy {
 		String name = (String)response.get("name");
 
 		// 별도의 트랜잭션을 통해 사용자 등록을 시도
-		User user = userRegistrationService.registerUserIfNotExists(email, name, SocialLoginType.GOOGLE);
+		MemberEntity memberEntity = userRegistrationService.registerUserIfNotExists(email, name,
+			SocialLoginType.GOOGLE);
 
-		return CustomeUserDetails.create(user);
+		return CustomeUserDetails.create(memberEntity);
 	}
 }

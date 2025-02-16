@@ -16,7 +16,7 @@ public class DeleteCommentUsecase {
 
 	public void execute(Long incidentId, Long commentId) {
 		var incident = incidentReadService.getIncident(incidentId);
-		// var user = userReadService.getUser(writerId);
+		// var memberEntity = userReadService.getMemberEntity(writerId);
 		commentWriteService.deleteComment(commentId);
 	}
 }

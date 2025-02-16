@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.dnd.backend.user.dto.AddressDTO;
 import com.dnd.backend.user.entity.Address;
-import com.dnd.backend.user.entity.User;
+import com.dnd.backend.user.entity.MemberEntity;
 import com.dnd.backend.user.exception.BadRequestException;
 import com.dnd.backend.user.exception.ResourceNotFoundException;
 import com.dnd.backend.user.exception.UnauthorizedException;
@@ -26,23 +26,23 @@ public class UserServiceImpl {
 
 	// 현재 인증된 사용자 조회
 
-	public User getCurrentUser() {
-		User user = securityService.getAuthenticatedUser();
-		user.setPassword(null); // 비밀번호 노출 방지
-		return user;
+	public MemberEntity getCurrentUser() {
+		MemberEntity memberEntity = securityService.getAuthenticatedUser();
+		memberEntity.setPassword(null); // 비밀번호 노출 방지
+		return memberEntity;
 	}
 
 	@Transactional
 	public String deleteAccount() {
-		User user = securityService.getAuthenticatedUser();
-		userRepository.delete(user);
-		return "User account deleted successfully";
+		MemberEntity memberEntity = securityService.getAuthenticatedUser();
+		userRepository.delete(memberEntity);
+		return "MemberEntity account deleted successfully";
 	}
 
 	@Transactional
 	public String addAddress(AddressDTO addressDTO) {
-		User user = securityService.getAuthenticatedUser();
-		if (user.getAddresses().size() >= 2) {
+		MemberEntity memberEntity = securityService.getAuthenticatedUser();
+		if (memberEntity.getAddresses().size() >= 2) {
 			throw new BadRequestException("Cannot add more than 2 addresses");
 		}
 
@@ -50,33 +50,33 @@ public class UserServiceImpl {
 			.title(addressDTO.getTitle())
 			.latitude(addressDTO.getLatitude())
 			.longitude(addressDTO.getLongitude())
-			.user(user)
+			.memberEntity(memberEntity)
 			.build();
 
-		user.addAddress(address);
+		memberEntity.addAddress(address);
 		addressRepository.save(address);
 		return "Address added successfully";
 	}
 
 	@Transactional
 	public String deleteAddress(Long addressId) {
-		User user = securityService.getAuthenticatedUser();
+		MemberEntity memberEntity = securityService.getAuthenticatedUser();
 		Address address = addressRepository.findById(addressId)
 			.orElseThrow(() -> new ResourceNotFoundException("Address not found"));
 
-		if (!address.getUser().getId().equals(user.getId())) {
+		if (!address.getMemberEntity().getId().equals(memberEntity.getId())) {
 			throw new UnauthorizedException("Not authorized to delete this address");
 		}
 
-		user.removeAddress(address);
+		memberEntity.removeAddress(address);
 		addressRepository.delete(address);
 		return "Address deleted successfully";
 
 	}
 
-	public List<User> getAllUsers() {
-		List<User> users = userRepository.findAll();
-		users.forEach(user -> user.setPassword(null));
-		return users;
+	public List<MemberEntity> getAllUsers() {
+		List<MemberEntity> memberEntities = userRepository.findAll();
+		memberEntities.forEach(user -> user.setPassword(null));
+		return memberEntities;
 	}
 }

@@ -12,8 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import com.dnd.backend.user.dto.SocialLoginRequest;
+import com.dnd.backend.user.entity.MemberEntity;
 import com.dnd.backend.user.entity.SocialLoginType;
-import com.dnd.backend.user.entity.User;
 import com.dnd.backend.user.exception.BadRequestException;
 import com.dnd.backend.user.repository.UserRepository;
 import com.dnd.backend.user.security.CustomeUserDetails;
@@ -55,22 +55,22 @@ public class KakaoLoginStrategy implements SocialLoginStrategy {
 		// 이메일 정규화: 소문자 변환 및 trim 처리
 		String trimEmail = email.toLowerCase().trim();
 
-		User user;
+		MemberEntity memberEntity;
 		try {
-			user = userRepository.findByEmail(email).orElseGet(() -> {
-				User newUser = User.builder()
+			memberEntity = userRepository.findByEmail(email).orElseGet(() -> {
+				MemberEntity newMemberEntity = MemberEntity.builder()
 					.email(trimEmail)
 					.password("") // 소셜 로그인은 패스워드 미사용
 					.socialLoginType(SocialLoginType.KAKAO)
 					.build();
-				return userRepository.save(newUser);
+				return userRepository.save(newMemberEntity);
 			});
 		} catch (DataIntegrityViolationException ex) {
 			// 동시성 문제 등으로 이미 등록된 경우, 기존 사용자 조회
-			user = userRepository.findByEmail(email)
-				.orElseThrow(() -> new BadRequestException("User registration failed due to duplicate email."));
+			memberEntity = userRepository.findByEmail(email)
+				.orElseThrow(() -> new BadRequestException("MemberEntity registration failed due to duplicate email."));
 		}
 
-		return CustomeUserDetails.create(user);
+		return CustomeUserDetails.create(memberEntity);
 	}
 }
