@@ -18,4 +18,5 @@ public interface IncidentLikeRepository {
 
 	List<Long> findUserIdsByIncidentAndStatus(Long incidentId, LikeStatus status);
 
+	boolean existsByUserIdAndIncidentId(Long userId, Long incidentId);
 }

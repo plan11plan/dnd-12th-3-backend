@@ -22,18 +22,26 @@ public class IncidentLikeController {
 	private final IncidentLikeReadService incidentLikeReadService;
 	private final ToggleLikeIncidentUsecase toggleLikeIncidentUsecase;
 
-	@PostMapping("/{incidentId}/likes/toggle")
+	@PostMapping("/{incidentId}/likes")
 	public String toggleLike(@PathVariable Long incidentId, @RequestParam Long userId) {
 		return toggleLikeIncidentUsecase.execute(userId, incidentId);
 	}
 
 	/**
-	 * 현재 좋아요 수 조회 API
+	 * 현재 좋아요 수 카운팅 API
 	 * 요청 예: GET /api/incidents/1/likes/count
 	 */
 	@GetMapping("/{incidentId}/likes/count")
 	public ResponseEntity<Integer> getLikeCount(@PathVariable Long incidentId) {
 		int likeCount = incidentLikeReadService.getLikeCount(incidentId);
 		return ResponseEntity.ok(likeCount);
+	}
+
+	@GetMapping("/{incidentId}/likes/check")
+	public ResponseEntity<Boolean> hasUserLiked(
+		@PathVariable Long incidentId,
+		@RequestParam Long writerId) {
+		boolean hasLiked = incidentLikeReadService.hasUserLiked(writerId, incidentId);
+		return ResponseEntity.ok(hasLiked);
 	}
 }
