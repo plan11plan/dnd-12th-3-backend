@@ -3,10 +3,9 @@ package com.dnd.backend.comment;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -17,19 +16,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.dnd.backend.comment.application.CreateCommentReplyUsecase;
 import com.dnd.backend.comment.application.CreateCommentUsecase;
 import com.dnd.backend.comment.application.DeleteCommentUsecase;
-import com.dnd.backend.comment.application.GetCommentUsecase;
-import com.dnd.backend.comment.application.GetCommentsUsecase;
-import com.dnd.backend.comment.application.GetParentCommentsUsecase;
-import com.dnd.backend.comment.application.GetParentCommentsWithChildrenUsecase;
 import com.dnd.backend.comment.application.UpdateCommentUsecase;
-import com.dnd.backend.support.util.CursorRequest;
-import com.dnd.backend.support.util.CursorResponse;
+import com.dnd.backend.user.security.CustomeUserDetails;
+import com.dnd.backend.user.security.customAuthenticationPrincipal.AuthUser;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/incidents/{incidentId}/comments")
+@RequestMapping("/api/incidents")
 @RequiredArgsConstructor
 public class CommentController {
 
@@ -37,95 +32,46 @@ public class CommentController {
 	private final CreateCommentReplyUsecase createCommentReplyUsecase;
 	private final UpdateCommentUsecase updateCommentUsecase;
 	private final DeleteCommentUsecase deleteCommentUsecase;
-	private final GetCommentsUsecase getCommentsUsecase;
-	private final GetCommentUsecase getCommentUsecase;
 
-	private final GetParentCommentsUsecase getParentCommentsUsecase;
-	private final GetParentCommentsWithChildrenUsecase getParentCommentsWithChildrenUsecase;
-
-	/**
-	 * 부모 댓글만 커서 조회 (대댓글 제외)
-	 */
-	@GetMapping("/cursor")
-	public ResponseEntity<CursorResponse<CommentResponse>> getParentComments(
+	@PostMapping("/{incidentId}/comments")
+	public ResponseEntity<Void> createComment(
 		@PathVariable Long incidentId,
-		@ModelAttribute CursorRequest cursorRequest) {
+		@RequestBody CreateCommentRequest request,
+		@AuthUser CustomeUserDetails member) {
+		createCommentUsecase.execute(incidentId, member.getId(), request.getContent());
+		return ResponseEntity.status(HttpStatus.CREATED).build();
 
-		CursorResponse<?> response = getParentCommentsUsecase.execute(incidentId, cursorRequest);
-		// 부모 댓글만 조회하므로 includeChildren=false
-		List<CommentResponse> dtos = ((List<?>)response.contents()).stream()
-			.map(entity -> new CommentResponse((CommentEntity)entity, false))
-			.collect(Collectors.toList());
-
-		return ResponseEntity.ok(new CursorResponse<>(response.nextCursorRequest(), dtos));
 	}
 
-	/**
-	 * 부모 댓글과 해당 대댓글들을 포함하여 커서 조회
-	 */
-	@GetMapping("/cursor/full")
-	public ResponseEntity<CursorResponse<CommentResponse>> getParentCommentsWithChildren(
-		@PathVariable Long incidentId,
-		@ModelAttribute CursorRequest cursorRequest) {
-
-		CursorResponse<?> response = getParentCommentsWithChildrenUsecase.execute(incidentId, cursorRequest);
-		// 부모 댓글과 대댓글 모두 포함하므로 includeChildren=true
-		List<CommentResponse> dtos = ((List<?>)response.contents()).stream()
-			.map(entity -> new CommentResponse((CommentEntity)entity, true))
-			.collect(Collectors.toList());
-
-		return ResponseEntity.ok(new CursorResponse<>(response.nextCursorRequest(), dtos));
-	}
-
-	@PostMapping
-	public void createComment(
-		@PathVariable Long incidentId,
-		@RequestBody CreateCommentRequest request) {
-		createCommentUsecase.execute(incidentId, request.getWriterId(), request.getContent());
-	}
-
-	@PostMapping("/{parentId}/replies")
-	public void createCommentReply(
+	@PostMapping("/{incidentId}/comments/{parentId}/replies")
+	public ResponseEntity<Void> createCommentReply(
 		@PathVariable Long incidentId,
 		@PathVariable Long parentId,
-		@RequestBody CreateCommentRequest request) {
-		createCommentReplyUsecase.execute(incidentId, request.getWriterId(), request.getContent(), parentId);
+		@RequestBody CreateCommentRequest request,
+		@AuthUser CustomeUserDetails member) {
+		createCommentReplyUsecase.execute(incidentId, member.getId(), request.getContent(), parentId);
+		return ResponseEntity.ok().build();
+
 	}
 
-	@PutMapping("/{commentId}")
-	public void updateComment(
+	@PutMapping("/{incidentId}/comments/{commentId}")
+	public ResponseEntity<Void> updateComment(
 		@PathVariable Long incidentId,
 		@PathVariable Long commentId,
-		@RequestBody UpdateCommentRequest request) {
-		updateCommentUsecase.execute(incidentId, commentId, request.getWriterId(), request.getContent());
+		@RequestBody UpdateCommentRequest request,
+		@AuthUser CustomeUserDetails member) {
+		updateCommentUsecase.execute(incidentId, commentId, member.getId(), request.getContent());
+		return ResponseEntity.ok().build();
+
 	}
 
-	@DeleteMapping("/{commentId}")
-	public void deleteComment(@PathVariable Long incidentId, @PathVariable Long commentId) {
-		deleteCommentUsecase.execute(incidentId, commentId);
-	}
+	@DeleteMapping("/{incidentId}/comments/{commentId}")
+	public ResponseEntity<Void> deleteComment(@PathVariable Long incidentId,
+		@PathVariable Long commentId,
+		@AuthUser CustomeUserDetails member) {
+		deleteCommentUsecase.execute(incidentId, commentId, member.getId());
+		return ResponseEntity.noContent().build();
 
-	/**
-	 * 단건 댓글 조회
-	 */
-	@GetMapping("/{commentId}")
-	public ResponseEntity<CommentResponse> getComment(
-		@PathVariable Long incidentId,
-		@PathVariable Long commentId) {
-		CommentEntity comment = getCommentUsecase.execute(commentId);
-		return ResponseEntity.ok(new CommentResponse(comment));
-	}
-
-	/**
-	 * 게시글에 대한 상위 댓글 목록 조회
-	 */
-	@GetMapping
-	public ResponseEntity<List<CommentResponse>> getCommentsByIncident(@PathVariable Long incidentId) {
-		List<CommentEntity> comments = getCommentsUsecase.execute(incidentId);
-		List<CommentResponse> responses = comments.stream()
-			.map(CommentResponse::new)
-			.collect(Collectors.toList());
-		return ResponseEntity.ok(responses);
 	}
 
 	@Data

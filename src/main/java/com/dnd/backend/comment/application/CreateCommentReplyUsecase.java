@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 import com.dnd.backend.comment.CommentWriteService;
 import com.dnd.backend.incident.service.IncidentReadService;
-import com.dnd.backend.user.service.d.UserReadService;
+import com.dnd.backend.user.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -13,11 +13,11 @@ import lombok.RequiredArgsConstructor;
 public class CreateCommentReplyUsecase {
 	private final CommentWriteService commentWriteService;
 	private final IncidentReadService incidentReadService;
-	private final UserReadService userReadService;
+	private final MemberService memberService;
 
 	public void execute(Long incidentId, Long writerId, String content, Long parentId) {
 		var incident = incidentReadService.getIncident(incidentId);
-		var user = userReadService.getUser(writerId);
-		commentWriteService.createReply(incident.getId(), user.getId(), content, parentId);
+		var member = memberService.getMember(writerId);
+		commentWriteService.createReply(incident.getId(), member.getId(), content, parentId);
 	}
 }

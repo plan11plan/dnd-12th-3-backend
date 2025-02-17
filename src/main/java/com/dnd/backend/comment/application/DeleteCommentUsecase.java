@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 
 import com.dnd.backend.comment.CommentWriteService;
 import com.dnd.backend.incident.service.IncidentReadService;
+import com.dnd.backend.user.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -12,11 +13,11 @@ import lombok.RequiredArgsConstructor;
 public class DeleteCommentUsecase {
 	private final CommentWriteService commentWriteService;
 	private final IncidentReadService incidentReadService;
-	// private final UserReadService userReadService;
+	private final MemberService memberService;
 
-	public void execute(Long incidentId, Long commentId) {
+	public void execute(Long incidentId, Long commentId, Long writerId) {
 		var incident = incidentReadService.getIncident(incidentId);
-		// var memberEntity = userReadService.getMemberEntity(writerId);
+		var memberEntity = memberService.getMember(writerId);
 		commentWriteService.deleteComment(commentId);
 	}
 }
