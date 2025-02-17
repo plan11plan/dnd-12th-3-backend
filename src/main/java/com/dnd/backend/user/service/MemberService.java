@@ -58,7 +58,7 @@ public class MemberService {
 		}
 
 		Address address = Address.builder()
-			.title(addressDTO.getTitle())
+			.addressName(addressDTO.getAddressName())
 			.latitude(addressDTO.getLatitude())
 			.longitude(addressDTO.getLongitude())
 			.memberEntity(memberEntity)
@@ -89,5 +89,10 @@ public class MemberService {
 		List<MemberEntity> memberEntities = memberRepository.findAll();
 		memberEntities.forEach(user -> user.setPassword(null));
 		return memberEntities;
+	}
+
+	public List<Address> getMyAddress() {
+		MemberEntity authenticatedUser = securityService.getAuthenticatedUser();
+		return authenticatedUser.getAddresses();
 	}
 }

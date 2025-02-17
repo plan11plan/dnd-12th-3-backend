@@ -11,6 +11,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Builder;
@@ -44,16 +45,21 @@ public class MemberEntity {
 	@OneToMany(mappedBy = "memberEntity", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Address> addresses = new ArrayList<>();
 
+	@Lob
+	@Column(nullable = true, unique = false)
+	private String providerId;  // 구글 sub or 카카오 id 등
+
 	// 모든 필드를 포함한 생성자 (빌더 패턴을 위해 필요)
 	@Builder
 	public MemberEntity(Long id, String name, String email, String password, SocialLoginType socialLoginType,
-		List<Address> addresses) {
+		List<Address> addresses, String providerId) {
 		this.id = id;
 		this.name = name;
 		this.email = email;
 		this.password = password;
 		this.socialLoginType = socialLoginType;
 		this.addresses = addresses != null ? addresses : new ArrayList<>();
+		this.providerId = providerId;
 	}
 
 	public void addAddress(Address address) {
