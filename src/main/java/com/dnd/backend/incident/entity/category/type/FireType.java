@@ -1,9 +1,9 @@
 package com.dnd.backend.incident.entity.category.type;
 
-import com.dnd.backend.incident.entity.category.DisasterCategory;
-import com.dnd.backend.incident.entity.category.DisasterType;
+import com.dnd.backend.incident.entity.category.IncidentCategory;
+import com.dnd.backend.incident.entity.category.IncidentType;
 
-public enum FireType implements DisasterType {
+public enum FireType implements IncidentType {
 	NATURAL("자연");
 
 	private final String name;
@@ -18,7 +18,7 @@ public enum FireType implements DisasterType {
 	}
 
 	@Override
-	public DisasterCategory getParentType() {
-		return DisasterCategory.화재;
+	public IncidentCategory getParentType() {
+		return IncidentCategory.화재;
 	}
 }

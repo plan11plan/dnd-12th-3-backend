@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import com.dnd.backend.user.entity.MemberEntity;
 
 @Repository
-public interface UserRepository extends JpaRepository<MemberEntity, Long> {
+public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
 	Optional<MemberEntity> findByEmail(String email);
 }

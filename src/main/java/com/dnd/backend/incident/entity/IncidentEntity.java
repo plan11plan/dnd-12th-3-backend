@@ -2,7 +2,7 @@ package com.dnd.backend.incident.entity;
 
 import java.util.Objects;
 
-import com.dnd.backend.incident.entity.category.DisasterCategory;
+import com.dnd.backend.incident.entity.category.IncidentCategory;
 import com.dnd.backend.support.auditing.BaseTimeEntity;
 
 import jakarta.persistence.Entity;
@@ -37,42 +37,44 @@ public class IncidentEntity extends BaseTimeEntity {
 	private String description;
 
 	@Enumerated(EnumType.STRING)
-	private DisasterCategory disasterCategory;
+	private IncidentCategory incidentCategory;
 
-	private double pointX;
+	private double latitude;
 
-	private double pointY;
-	private String roadNameAddress;
+	private double longitude;
+	private String locationInfoName;
 
+	private int commentCount;
 	private int likeCount; // 좋아요 수 필드 추가
 
 	@Builder
 	public IncidentEntity(
 		Long writerId,
 		String description,
-		DisasterCategory disasterCategory,
-		double pointX,
-		double pointY,
-		String roadNameAddress
+		IncidentCategory incidentCategory,
+		double latitude,
+		double longitude,
+		String locationInfoName
 	) {
 		this.writerId = Objects.requireNonNull(writerId);
 		this.description = Objects.requireNonNull(description);
-		this.disasterCategory = Objects.requireNonNull(disasterCategory);
-		this.pointX = pointX;
-		this.pointY = pointY;
-		this.roadNameAddress = roadNameAddress;
+		this.incidentCategory = Objects.requireNonNull(incidentCategory);
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.locationInfoName = locationInfoName;
+		this.commentCount = 0;
 		this.likeCount = 0;
 	}
 
 	public final IncidentEntity updateDetails(
 		String description,
 		String roadNameAddress,
-		DisasterCategory disasterCategory
+		IncidentCategory incidentCategory
 	) {
 		return this.toBuilder()
 			.description(description)
-			.roadNameAddress(roadNameAddress)
-			.disasterCategory(disasterCategory)
+			.locationInfoName(roadNameAddress)
+			.incidentCategory(incidentCategory)
 			.build();
 	}
 

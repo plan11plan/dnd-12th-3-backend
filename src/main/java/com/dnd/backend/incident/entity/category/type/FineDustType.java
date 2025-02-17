@@ -1,9 +1,9 @@
 package com.dnd.backend.incident.entity.category.type;
 
-import com.dnd.backend.incident.entity.category.DisasterCategory;
-import com.dnd.backend.incident.entity.category.DisasterType;
+import com.dnd.backend.incident.entity.category.IncidentCategory;
+import com.dnd.backend.incident.entity.category.IncidentType;
 
-public enum FineDustType implements DisasterType {
+public enum FineDustType implements IncidentType {
 	FINE_DUST("미세먼지");
 
 	private final String name;
@@ -18,7 +18,7 @@ public enum FineDustType implements DisasterType {
 	}
 
 	@Override
-	public DisasterCategory getParentType() {
-		return DisasterCategory.미세먼지;
+	public IncidentCategory getParentType() {
+		return IncidentCategory.미세먼지;
 	}
 }

@@ -7,7 +7,7 @@ import com.dnd.backend.incident.dto.UpdateIncidentCommand;
 import com.dnd.backend.incident.dto.WriteIncidentCommand;
 import com.dnd.backend.incident.entity.IncidentEntity;
 import com.dnd.backend.incident.entity.IncidentRepository;
-import com.dnd.backend.incident.entity.category.DisasterCategory;
+import com.dnd.backend.incident.entity.category.IncidentCategory;
 import com.dnd.backend.incident.exception.IncidentNotFoundException;
 import com.dnd.backend.incident.exception.InvalidDescriptionException;
 
@@ -21,17 +21,18 @@ public class IncidentWriteService {
 
 	@Transactional
 	public Long create(Long writerId, WriteIncidentCommand command) {
-		var disasterGroup = DisasterCategory.mapToDisasterGroup(command.disasterGroup());
+		var disasterGroup = IncidentCategory.mapToDisasterGroup(command.incidentCategory());
 
-		var roadNameAddress = geocodingService.getRoadNameAddress(command.pointX(), command.pointY());
+		var roadNameAddress = geocodingService.getRoadNameAddress(command.latitude(), command.longitude());
 
 		var incidentEntity = IncidentEntity.builder()
-			.roadNameAddress(roadNameAddress)
+			.locationInfoName(roadNameAddress)
 			.writerId(writerId)
 			.description(command.description())
-			.disasterCategory(disasterGroup)
-			.pointX(command.pointX())
-			.pointY(command.pointY())
+			.locationInfoName(command.locationInfoName())
+			.incidentCategory(disasterGroup)
+			.latitude(command.latitude())
+			.longitude(command.longitude())
 			.build();
 
 		return incidentRepository.save(incidentEntity).getId();
@@ -42,12 +43,12 @@ public class IncidentWriteService {
 		IncidentEntity incidentEntity = incidentRepository.findById(incidentId)
 			.orElseThrow(IncidentNotFoundException::new);
 
-		if (command.toDescription() == null || command.toDescription().isBlank()) {
+		if (command.description() == null || command.description().isBlank()) {
 			throw new InvalidDescriptionException();
 		}
 
-		incidentEntity = incidentEntity.updateDetails(command.toDescription(), command.toLocationName(),
-			DisasterCategory.mapToDisasterGroup(command.toDisasterCategory()));
+		incidentEntity = incidentEntity.updateDetails(command.description(), command.locationInfoName(),
+			IncidentCategory.mapToDisasterGroup(command.incidentCategory()));
 		incidentRepository.save(incidentEntity);
 	}
 

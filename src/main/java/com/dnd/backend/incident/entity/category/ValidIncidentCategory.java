@@ -10,10 +10,10 @@ import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
 @Documented
-@Constraint(validatedBy = DisasterCategoryValidator.class)
+@Constraint(validatedBy = IncidentCategoryValidator.class)
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ValidDisasterCategory {
+public @interface ValidIncidentCategory {
 	String message() default "유효하지 않은 재난 카테고리입니다.";
 
 	Class<?>[] groups() default {};

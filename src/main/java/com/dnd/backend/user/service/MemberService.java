@@ -1,6 +1,8 @@
 package com.dnd.backend.user.service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,21 +14,30 @@ import com.dnd.backend.user.exception.BadRequestException;
 import com.dnd.backend.user.exception.ResourceNotFoundException;
 import com.dnd.backend.user.exception.UnauthorizedException;
 import com.dnd.backend.user.repository.AddressRepository;
-import com.dnd.backend.user.repository.UserRepository;
+import com.dnd.backend.user.repository.MemberRepository;
+import com.dnd.backend.user.service.d.UserNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl {
+public class MemberService {
 
-	private final UserRepository userRepository;
+	private final MemberRepository memberRepository;
 	private final AddressRepository addressRepository;
 	private final SecurityService securityService;
 
+	public MemberEntity getMember(Long memberId) {
+		return memberRepository.findById(memberId).orElseThrow(() -> new UserNotFoundException());
+	}
+
+	public Map<Long, MemberEntity> getMembersByIds(List<Long> memberIds) {
+		List<MemberEntity> members = memberRepository.findAllById(memberIds);
+		return members.stream().collect(Collectors.toMap(MemberEntity::getId, member -> member));
+	}
 	// 현재 인증된 사용자 조회
 
-	public MemberEntity getCurrentUser() {
+	public MemberEntity getCurrentMember() {
 		MemberEntity memberEntity = securityService.getAuthenticatedUser();
 		memberEntity.setPassword(null); // 비밀번호 노출 방지
 		return memberEntity;
@@ -35,7 +46,7 @@ public class UserServiceImpl {
 	@Transactional
 	public String deleteAccount() {
 		MemberEntity memberEntity = securityService.getAuthenticatedUser();
-		userRepository.delete(memberEntity);
+		memberRepository.delete(memberEntity);
 		return "MemberEntity account deleted successfully";
 	}
 
@@ -75,7 +86,7 @@ public class UserServiceImpl {
 	}
 
 	public List<MemberEntity> getAllUsers() {
-		List<MemberEntity> memberEntities = userRepository.findAll();
+		List<MemberEntity> memberEntities = memberRepository.findAll();
 		memberEntities.forEach(user -> user.setPassword(null));
 		return memberEntities;
 	}

@@ -15,7 +15,7 @@ import com.dnd.backend.user.dto.SocialLoginRequest;
 import com.dnd.backend.user.entity.MemberEntity;
 import com.dnd.backend.user.entity.SocialLoginType;
 import com.dnd.backend.user.exception.BadRequestException;
-import com.dnd.backend.user.repository.UserRepository;
+import com.dnd.backend.user.repository.MemberRepository;
 import com.dnd.backend.user.security.CustomeUserDetails;
 import com.dnd.backend.user.service.SocialLoginStrategy;
 
@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class KakaoLoginStrategy implements SocialLoginStrategy {
 
-	private final UserRepository userRepository;
+	private final MemberRepository memberRepository;
 	private final RestTemplate restTemplate;
 
 	@Override
@@ -57,17 +57,17 @@ public class KakaoLoginStrategy implements SocialLoginStrategy {
 
 		MemberEntity memberEntity;
 		try {
-			memberEntity = userRepository.findByEmail(email).orElseGet(() -> {
+			memberEntity = memberRepository.findByEmail(email).orElseGet(() -> {
 				MemberEntity newMemberEntity = MemberEntity.builder()
 					.email(trimEmail)
 					.password("") // 소셜 로그인은 패스워드 미사용
 					.socialLoginType(SocialLoginType.KAKAO)
 					.build();
-				return userRepository.save(newMemberEntity);
+				return memberRepository.save(newMemberEntity);
 			});
 		} catch (DataIntegrityViolationException ex) {
 			// 동시성 문제 등으로 이미 등록된 경우, 기존 사용자 조회
-			memberEntity = userRepository.findByEmail(email)
+			memberEntity = memberRepository.findByEmail(email)
 				.orElseThrow(() -> new BadRequestException("MemberEntity registration failed due to duplicate email."));
 		}
 

@@ -47,8 +47,7 @@ public class SecurityConfig {
 			.authorizeHttpRequests(auth -> auth
 				.requestMatchers(
 					"/**",
-					"/api/**",
-					"/api/auth/**",
+					"/api/oauth/**",
 					"/oauth/google",
 					"/oauth/kakao",
 					"/login/**",

@@ -25,3 +25,4 @@ public class GetIncidentsByCursorUseCase {
 		return new IncidentCursorResponse(incidentCursor.nextCursorRequest(), withMediaList);
 	}
 }
+

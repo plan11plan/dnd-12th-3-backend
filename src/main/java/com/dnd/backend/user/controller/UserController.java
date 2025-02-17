@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dnd.backend.user.dto.AddressDTO;
 import com.dnd.backend.user.entity.MemberEntity;
-import com.dnd.backend.user.service.UserServiceImpl;
+import com.dnd.backend.user.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,12 +22,12 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/user")
 public class UserController {
 
-	private final UserServiceImpl userService;
+	private final MemberService userService;
 
 	// 내 정보 조회
 	@GetMapping("/me")
 	public ResponseEntity<?> getCurrentUser() {
-		MemberEntity memberEntity = userService.getCurrentUser();
+		MemberEntity memberEntity = userService.getCurrentMember();
 		return ResponseEntity.ok(memberEntity);
 	}
 

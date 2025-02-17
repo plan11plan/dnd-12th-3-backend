@@ -12,6 +12,7 @@ import com.dnd.backend.incident.entity.IncidentEntity;
 import com.dnd.backend.mediaFile.dto.MediaFileInfo;
 import com.dnd.backend.mediaFile.service.MediaFileReadService;
 import com.dnd.backend.support.util.DistanceFormatter;
+import com.dnd.backend.user.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class IncidentWithMediaAssembler {
 
 	private final MediaFileReadService mediaFileReadService;
+	private final MemberService memberService;  // 작성자 정보 조회를 위한 서비스
 
 	public List<IncidentWithMediaDto> toIncidentWithMediaDtos(List<IncidentEntity> incidents) {
 		if (incidents.isEmpty()) {
@@ -29,44 +31,61 @@ public class IncidentWithMediaAssembler {
 			.map(IncidentEntity::getId)
 			.collect(Collectors.toList());
 
+		// 유저 id 모음
+		var writerIds = incidents.stream()
+			.map(IncidentEntity::getWriterId)
+			.distinct()
+			.collect(Collectors.toList());
+		var writerMap = memberService.getMembersByIds(writerIds);
+
 		var allMediaFiles = mediaFileReadService.getMediaFilesByIncidentIds(incidentIds);
 		var mediaFilesGrouped = allMediaFiles.stream()
 			.collect(Collectors.groupingBy(MediaFileInfo::incidentId));
 
-		var incidentWriterInfo = new IncidentWriterInfo("mockNickname");
-
 		return incidents.stream()
 			.map(incident -> {
+				var writer = writerMap.get(incident.getWriterId());
+				// 작성자 정보가 없을 경우 기본값 설정
+				var writerName = writer != null ? writer.getName() : "Unknown";
+				var writerInfo = new IncidentWriterInfo(writerName);
 				var mediaFiles = mediaFilesGrouped.getOrDefault(incident.getId(), Collections.emptyList());
-				return new IncidentWithMediaDto(incidentWriterInfo, incident, mediaFiles);
+				return new IncidentWithMediaDto(writerInfo, incident, mediaFiles);
 			})
 			.collect(Collectors.toList());
 	}
 
 	public List<IncidentWithMediaAndDistanceDto> toIncidentWithMediaAndDistanceDtos(
-		List<IncidentDistanceDto> incidentDistances) {
-
+		List<IncidentDistanceDto> incidentDistances
+	) {
 		if (incidentDistances.isEmpty()) {
 			return Collections.emptyList();
 		}
 
+		// incidentIds와 작성자 id를 추출하여 미디어와 작성자 정보를 배치 조회
 		var incidentIds = incidentDistances.stream()
 			.map(dto -> dto.incident().getId())
 			.toList();
+
+		var writerIds = incidentDistances.stream()
+			.map(dto -> dto.incident().getWriterId())
+			.distinct()
+			.collect(Collectors.toList());
+		var writerMap = memberService.getMembersByIds(writerIds);
 
 		var allMediaFiles = mediaFileReadService.getMediaFilesByIncidentIds(incidentIds);
 		var mediaFilesGrouped = allMediaFiles.stream()
 			.collect(Collectors.groupingBy(MediaFileInfo::incidentId));
 
-		var writer = new IncidentWriterInfo("mockNickname");
-
 		return incidentDistances.stream()
 			.map(dto -> {
 				var incident = dto.incident();
 				var distance = dto.distance();
+				var writer = writerMap.get(incident.getWriterId());
+				var writerName = writer != null ? writer.getName() : "Unknown";
+				var writerInfo = new IncidentWriterInfo(writerName);
 				var mediaFiles = mediaFilesGrouped.getOrDefault(incident.getId(), Collections.emptyList());
-				return new IncidentWithMediaAndDistanceDto(writer, incident, DistanceFormatter.formatDistance(distance),
-					mediaFiles);
+				return new IncidentWithMediaAndDistanceDto(writerInfo, incident,
+					DistanceFormatter.formatDistance(distance), mediaFiles);
 			})
 			.collect(Collectors.toList());
 	}
