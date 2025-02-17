@@ -7,7 +7,7 @@ import com.dnd.backend.incident.dto.UpdateIncidentCommand;
 import com.dnd.backend.incident.dto.WriteIncidentCommand;
 import com.dnd.backend.incident.entity.IncidentEntity;
 import com.dnd.backend.incident.entity.IncidentRepository;
-import com.dnd.backend.incident.entity.category.DisasterCategory;
+import com.dnd.backend.incident.entity.category.IncidentCategory;
 import com.dnd.backend.incident.exception.IncidentNotFoundException;
 import com.dnd.backend.incident.exception.InvalidDescriptionException;
 
@@ -21,7 +21,7 @@ public class IncidentWriteService {
 
 	@Transactional
 	public Long create(Long writerId, WriteIncidentCommand command) {
-		var disasterGroup = DisasterCategory.mapToDisasterGroup(command.disasterGroup());
+		var disasterGroup = IncidentCategory.mapToDisasterGroup(command.incidentCategory());
 
 		var roadNameAddress = geocodingService.getRoadNameAddress(command.latitude(), command.longitude());
 
@@ -30,7 +30,7 @@ public class IncidentWriteService {
 			.writerId(writerId)
 			.description(command.description())
 			.locationInfoName(command.locationInfoName())
-			.disasterCategory(disasterGroup)
+			.incidentCategory(disasterGroup)
 			.latitude(command.latitude())
 			.longitude(command.longitude())
 			.build();
@@ -43,12 +43,12 @@ public class IncidentWriteService {
 		IncidentEntity incidentEntity = incidentRepository.findById(incidentId)
 			.orElseThrow(IncidentNotFoundException::new);
 
-		if (command.toDescription() == null || command.toDescription().isBlank()) {
+		if (command.description() == null || command.description().isBlank()) {
 			throw new InvalidDescriptionException();
 		}
 
-		incidentEntity = incidentEntity.updateDetails(command.toDescription(), command.toLocationName(),
-			DisasterCategory.mapToDisasterGroup(command.toDisasterCategory()));
+		incidentEntity = incidentEntity.updateDetails(command.description(), command.locationName(),
+			IncidentCategory.mapToDisasterGroup(command.incidentCategory()));
 		incidentRepository.save(incidentEntity);
 	}
 

@@ -1,9 +1,9 @@
 package com.dnd.backend.incident.entity.category.type;
 
-import com.dnd.backend.incident.entity.category.DisasterCategory;
-import com.dnd.backend.incident.entity.category.DisasterType;
+import com.dnd.backend.incident.entity.category.IncidentCategory;
+import com.dnd.backend.incident.entity.category.IncidentType;
 
-public enum ExplosionType implements DisasterType {
+public enum ExplosionType implements IncidentType {
 	EXPLOSION("폭발");
 
 	private final String name;
@@ -18,7 +18,7 @@ public enum ExplosionType implements DisasterType {
 	}
 
 	@Override
-	public DisasterCategory getParentType() {
-		return DisasterCategory.폭발;
+	public IncidentCategory getParentType() {
+		return IncidentCategory.폭발;
 	}
 }

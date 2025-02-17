@@ -1,9 +1,9 @@
 package com.dnd.backend.incident.entity.category.type;
 
-import com.dnd.backend.incident.entity.category.DisasterCategory;
-import com.dnd.backend.incident.entity.category.DisasterType;
+import com.dnd.backend.incident.entity.category.IncidentCategory;
+import com.dnd.backend.incident.entity.category.IncidentType;
 
-public enum NaturalDisasterType implements DisasterType {
+public enum NaturalIncidentType implements IncidentType {
 	TYPHOON("태풍"),
 	DROUGHT("건조"),
 	FOREST_FIRE("산불"),
@@ -17,7 +17,7 @@ public enum NaturalDisasterType implements DisasterType {
 
 	private final String name;
 
-	NaturalDisasterType(String name) {
+	NaturalIncidentType(String name) {
 		this.name = name;
 	}
 
@@ -27,7 +27,7 @@ public enum NaturalDisasterType implements DisasterType {
 	}
 
 	@Override
-	public DisasterCategory getParentType() {
-		return DisasterCategory.자연재난;
+	public IncidentCategory getParentType() {
+		return IncidentCategory.자연재난;
 	}
 }

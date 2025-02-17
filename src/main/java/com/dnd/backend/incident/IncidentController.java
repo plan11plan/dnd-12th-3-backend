@@ -53,7 +53,7 @@ public class IncidentController {
 
 	@PostMapping(consumes = {"multipart/form-data"})
 	public void createIncident(
-		@RequestPart("incidentData") WriteIncidentCommand command,
+		@Valid @RequestPart("incidentData") WriteIncidentCommand command,
 		@RequestPart(value = "files", required = false) List<MultipartFile> files,
 		@AuthUser CustomeUserDetails customeUserDetails) {
 

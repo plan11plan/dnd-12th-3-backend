@@ -3,7 +3,7 @@ package com.dnd.backend.incident.entity.category;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class DisasterCategoryValidator implements ConstraintValidator<ValidDisasterCategory, String> {
+public class IncidentCategoryValidator implements ConstraintValidator<ValidIncidentCategory, String> {
 
 	@Override
 	public boolean isValid(String value, ConstraintValidatorContext context) {
@@ -12,7 +12,7 @@ public class DisasterCategoryValidator implements ConstraintValidator<ValidDisas
 		}
 
 		try {
-			DisasterCategory.mapToDisasterGroup(value);
+			IncidentCategory.mapToDisasterGroup(value);
 			return true;
 		} catch (Exception e) {
 			return false;

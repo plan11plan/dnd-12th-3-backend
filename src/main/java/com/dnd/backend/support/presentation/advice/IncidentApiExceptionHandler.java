@@ -38,7 +38,7 @@ public class IncidentApiExceptionHandler {
 			IncidentErrorCode.INCIDENT_DISASTER_CATEGORY_INVALID_DATA,
 			"존재하지 않는 재난 카테고리입니다.",
 			null,
-			List.of(new Response.ErrorDetail("disasterGroup", "존재하는 카테고리를 입력해주세요."))
+			List.of(new Response.ErrorDetail("incidentCategory", "존재하는 카테고리를 입력해주세요."))
 		);
 	}
 
