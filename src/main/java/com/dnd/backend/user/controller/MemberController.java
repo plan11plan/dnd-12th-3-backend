@@ -19,8 +19,8 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/user")
-public class UserController {
+@RequestMapping("/api/member")
+public class MemberController {
 
 	private final MemberService userService;
 
@@ -54,5 +54,10 @@ public class UserController {
 	public ResponseEntity<?> deleteAddress(@PathVariable Long addressId) {
 		String message = userService.deleteAddress(addressId);
 		return ResponseEntity.ok(message);
+	}
+
+	@GetMapping("/address")
+	public ResponseEntity<?> getMyAddress() {
+		return ResponseEntity.ok(userService.getMyAddress());
 	}
 }

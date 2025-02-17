@@ -1,5 +1,7 @@
 package com.dnd.backend.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -24,11 +26,12 @@ public class Address {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	private String title;
+	private String addressName;
 	private double latitude;
 	private double longitude;
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonBackReference  // JSON 직렬화 시 무시
 	@JoinColumn(name = "member_id")
 	private MemberEntity memberEntity;
 }
