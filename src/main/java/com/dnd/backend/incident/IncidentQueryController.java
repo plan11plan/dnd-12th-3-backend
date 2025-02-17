@@ -20,6 +20,8 @@ import com.dnd.backend.incident.dto.IncidentDto;
 import com.dnd.backend.incident.entity.IncidentEntity;
 import com.dnd.backend.incident.service.IncidentReadService;
 import com.dnd.backend.support.util.CursorRequest;
+import com.dnd.backend.user.security.CustomeUserDetails;
+import com.dnd.backend.user.security.customAuthenticationPrincipal.AuthUser;
 
 import lombok.RequiredArgsConstructor;
 
@@ -45,11 +47,11 @@ public class IncidentQueryController {
 		return getIncidentUsecase.execute(incidentId);
 	}
 
-	@GetMapping("/writer/{writerId}")
+	@GetMapping("/my")
 	public IncidentCursorResponse getWriterIncidentsByCursor(
-		@PathVariable("writerId") Long writerId,
+		@AuthUser CustomeUserDetails customeUserDetails,
 		@ModelAttribute CursorRequest cursorRequest) {
-
+		Long writerId = customeUserDetails.getId();
 		return getIncidentsByCursorUseCase.execute(writerId, cursorRequest);
 	}
 
