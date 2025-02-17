@@ -20,19 +20,14 @@ public class GetMostCommentedIncidentsWithinScreenUseCase {
 	private final IncidentWithMediaAssembler incidentWithMediaAssembler;
 
 	public List<IncidentWithMediaAndDistanceDto> execute(
-		double topLeftX,
-		double topLeftY,
-		double bottomRightX,
-		double bottomRightY,
-		double myX,
-		double myY
+		double topRightX, double topRightY, // 오른쪽 위 좌표
+		double bottomLeftX, double bottomLeftY, // 왼쪽 아래 좌표
+		double myX, double myY // 사용자 위치
 	) {
-		// 1. 화면 영역 내의 게시글 조회
-		List<IncidentEntity> incidents = incidentReadService.findIncidentsWithinScreen(topLeftX, topLeftY, bottomRightX,
-			bottomRightY);
-		// 2. 댓글 수 내림차순 정렬
+		List<IncidentEntity> incidents = incidentReadService.findIncidentsWithinScreen(
+			topRightX, topRightY, bottomLeftX, bottomLeftY
+		);
 		incidents.sort(Comparator.comparingInt(IncidentEntity::getCommentCount).reversed());
-		// 3. 내 위치 기준 각 게시글까지의 거리 계산
 		List<IncidentDistanceDto> distanceDtos = incidents.stream()
 			.map(incident -> {
 				double distance = incidentReadService.calculateDistance(myY, myX, incident.getLatitude(),
@@ -40,7 +35,6 @@ public class GetMostCommentedIncidentsWithinScreenUseCase {
 				return new IncidentDistanceDto(incident, distance);
 			})
 			.collect(Collectors.toList());
-		// 4. 작성자, 미디어 정보와 함께 DTO 변환하여 반환
 		return incidentWithMediaAssembler.toIncidentWithMediaAndDistanceDtos(distanceDtos);
 	}
 }
