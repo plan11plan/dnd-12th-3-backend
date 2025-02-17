@@ -64,19 +64,21 @@ public class IncidentReadService {
 	 * bottomRightY: 화면 오른쪽 아래의 위도 (최소 위도)
 	 */
 	// 화면 사각형 영역 내의 게시글 조회
-	public List<IncidentEntity> findIncidentsWithinScreen(double topLeftX, double topLeftY, double bottomRightX,
-		double bottomRightY) {
+	public List<IncidentEntity> findIncidentsWithinScreen(
+		double topRightX, double topRightY, // 오른쪽 위 좌표
+		double bottomLeftX, double bottomLeftY // 왼쪽 아래 좌표
+	) {
 		List<IncidentEntity> allIncidents = incidentRepository.findAll()
 			.orElseThrow(IncidentNotFoundException::new);
 		return allIncidents.stream()
-			// 경도: topLeftX(최소) ~ bottomRightX(최대)
-			.filter(incident -> incident.getLongitude() >= topLeftX && incident.getLongitude() <= bottomRightX)
-			// 위도: topLeftY(최대) ~ bottomRightY(최소)
-			.filter(incident -> incident.getLatitude() <= topLeftY && incident.getLatitude() >= bottomRightY)
+			// 경도: bottomLeftX(최소) ~ topRightX(최대)
+			.filter(incident -> incident.getLongitude() >= bottomLeftX && incident.getLongitude() <= topRightX)
+			// 위도: bottomLeftY(최소) ~ topRightY(최대)
+			.filter(incident -> incident.getLatitude() >= bottomLeftY && incident.getLatitude() <= topRightY)
 			.collect(Collectors.toList());
 	}
 
-	// Haversine 공식 (단위: km) -- public으로 변경하여 외부에서 재사용 가능하게 함
+	// Haversine 공식 (단위: km)
 	public double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
 		final int R = 6371; // 지구의 반지름 (km)
 		double latDistance = Math.toRadians(lat2 - lat1);
