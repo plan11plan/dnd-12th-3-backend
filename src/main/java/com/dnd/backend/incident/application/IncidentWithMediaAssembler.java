@@ -12,6 +12,7 @@ import com.dnd.backend.incident.entity.IncidentEntity;
 import com.dnd.backend.mediaFile.dto.MediaFileInfo;
 import com.dnd.backend.mediaFile.service.MediaFileReadService;
 import com.dnd.backend.support.util.DistanceFormatter;
+import com.dnd.backend.user.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class IncidentWithMediaAssembler {
 
 	private final MediaFileReadService mediaFileReadService;
+	private final MemberService memberService;  // 작성자 정보 조회를 위한 서비스
 
 	public List<IncidentWithMediaDto> toIncidentWithMediaDtos(List<IncidentEntity> incidents) {
 		if (incidents.isEmpty()) {
@@ -29,16 +31,25 @@ public class IncidentWithMediaAssembler {
 			.map(IncidentEntity::getId)
 			.collect(Collectors.toList());
 
+		// 유저 id 모음
+		var writerIds = incidents.stream()
+			.map(IncidentEntity::getWriterId)
+			.distinct()
+			.collect(Collectors.toList());
+		var writerMap = memberService.getMembersByIds(writerIds);
+
 		var allMediaFiles = mediaFileReadService.getMediaFilesByIncidentIds(incidentIds);
 		var mediaFilesGrouped = allMediaFiles.stream()
 			.collect(Collectors.groupingBy(MediaFileInfo::incidentId));
 
-		var incidentWriterInfo = new IncidentWriterInfo("mockNickname");
-
 		return incidents.stream()
 			.map(incident -> {
+				var writer = writerMap.get(incident.getWriterId());
+				// 작성자 정보가 없을 경우 기본값 설정
+				var writerName = writer != null ? writer.getName() : "Unknown";
+				var writerInfo = new IncidentWriterInfo(writerName);
 				var mediaFiles = mediaFilesGrouped.getOrDefault(incident.getId(), Collections.emptyList());
-				return new IncidentWithMediaDto(incidentWriterInfo, incident, mediaFiles);
+				return new IncidentWithMediaDto(writerInfo, incident, mediaFiles);
 			})
 			.collect(Collectors.toList());
 	}

@@ -47,7 +47,7 @@ public class IncidentWriteService {
 			throw new InvalidDescriptionException();
 		}
 
-		incidentEntity = incidentEntity.updateDetails(command.description(), command.locationName(),
+		incidentEntity = incidentEntity.updateDetails(command.description(), command.locationInfoName(),
 			IncidentCategory.mapToDisasterGroup(command.incidentCategory()));
 		incidentRepository.save(incidentEntity);
 	}

@@ -3,7 +3,7 @@ package com.dnd.backend.user.service;
 import org.springframework.stereotype.Component;
 
 import com.dnd.backend.user.exception.BadRequestException;
-import com.dnd.backend.user.repository.UserRepository;
+import com.dnd.backend.user.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -11,10 +11,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserValidator {
 
-	private final UserRepository userRepository;
+	private final MemberRepository memberRepository;
 
 	public void validateEmail(String email) {
-		if (userRepository.findByEmail(email).isPresent()) {
+		if (memberRepository.findByEmail(email).isPresent()) {
 			throw new BadRequestException("Email address already in use.");
 		}
 	}

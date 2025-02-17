@@ -18,11 +18,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.dnd.backend.incident.application.CreateIncidentUseCase;
 import com.dnd.backend.incident.application.DeleteIncidentUseCase;
+import com.dnd.backend.incident.application.GetIncidentUsecase;
 import com.dnd.backend.incident.application.GetIncidentsByCursorUseCase;
 import com.dnd.backend.incident.application.GetNearIncidentsUseCase;
 import com.dnd.backend.incident.application.IncidentWithMediaAndDistanceDto;
 import com.dnd.backend.incident.application.UpdateIncidentDescriptionUseCase;
 import com.dnd.backend.incident.application.response.IncidentCursorResponse;
+import com.dnd.backend.incident.dto.IncidentDto;
 import com.dnd.backend.incident.dto.UpdateIncidentCommand;
 import com.dnd.backend.incident.dto.WriteIncidentCommand;
 import com.dnd.backend.incident.entity.IncidentEntity;
@@ -45,6 +47,7 @@ public class IncidentController {
 	private final GetNearIncidentsUseCase getNearIncidentsUsecase;
 	private final IncidentReadService incidentReadService;
 	private final DeleteIncidentUseCase deleteIncidentUseCase;
+	private final GetIncidentUsecase getIncidentUsecase;
 
 	@GetMapping("/test/findAll")
 	public List<IncidentEntity> createIncident() {
@@ -76,6 +79,12 @@ public class IncidentController {
 	public void deleteIncident(
 		@PathVariable("incidentId") Long incidentId) {
 		deleteIncidentUseCase.execute(incidentId);
+	}
+
+	@GetMapping("/{incidentId}")
+	public IncidentDto getIncident(
+		@PathVariable("incidentId") Long incidentId) {
+		return getIncidentUsecase.execute(incidentId);
 	}
 
 	@GetMapping("/writer/{writerId}")

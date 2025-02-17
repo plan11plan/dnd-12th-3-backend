@@ -46,6 +46,7 @@ public class SecurityConfig {
 				channel.anyRequest().requiresSecure())
 			.authorizeHttpRequests(auth -> auth
 				.requestMatchers(
+					"/**",
 					"/api/oauth/**",
 					"/oauth/google",
 					"/oauth/kakao",

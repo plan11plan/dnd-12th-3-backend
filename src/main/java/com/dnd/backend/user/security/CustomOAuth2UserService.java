@@ -12,13 +12,13 @@ import org.springframework.stereotype.Service;
 
 import com.dnd.backend.user.entity.MemberEntity;
 import com.dnd.backend.user.entity.SocialLoginType;
-import com.dnd.backend.user.repository.UserRepository;
+import com.dnd.backend.user.repository.MemberRepository;
 
 @Service
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
 	@Autowired
-	private UserRepository userRepository;
+	private MemberRepository memberRepository;
 
 	@Override
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -53,14 +53,14 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 			throw new OAuth2AuthenticationException("Email not found from OAuth2 provider");
 		}
 
-		MemberEntity memberEntity = userRepository.findByEmail(email).orElseGet(() -> {
+		MemberEntity memberEntity = memberRepository.findByEmail(email).orElseGet(() -> {
 			MemberEntity newMemberEntity = MemberEntity.builder()
 				.email(email)
 				.name(name)
 				.password("")
 				.socialLoginType(socialLoginType)
 				.build();
-			return userRepository.save(newMemberEntity);
+			return memberRepository.save(newMemberEntity);
 		});
 
 		CustomeUserDetails principal = CustomeUserDetails.create(memberEntity);

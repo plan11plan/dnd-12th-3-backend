@@ -10,21 +10,21 @@ import org.springframework.transaction.annotation.Transactional;
 import com.dnd.backend.user.entity.MemberEntity;
 import com.dnd.backend.user.entity.SocialLoginType;
 import com.dnd.backend.user.exception.BadRequestException;
-import com.dnd.backend.user.repository.UserRepository;
+import com.dnd.backend.user.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class UserRegistrationService {
-	private final UserRepository userRepository;
+	private final MemberRepository memberRepository;
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public MemberEntity registerUserIfNotExists(String email, String name, SocialLoginType socialLoginType) {
 		System.out.println("이메일" + email);
 		System.out.println("이름" + name);
 
-		Optional<MemberEntity> optionalUser = userRepository.findByEmail(email);
+		Optional<MemberEntity> optionalUser = memberRepository.findByEmail(email);
 		if (optionalUser.isPresent()) {
 			return optionalUser.get();
 		}
@@ -39,11 +39,11 @@ public class UserRegistrationService {
 		System.out.println(newMemberEntity.toString());
 
 		try {
-			MemberEntity savedMemberEntity = userRepository.save(newMemberEntity);
-			userRepository.flush();
+			MemberEntity savedMemberEntity = memberRepository.save(newMemberEntity);
+			memberRepository.flush();
 			return savedMemberEntity;
 		} catch (DataIntegrityViolationException ex) {
-			return userRepository.findByEmail(email)
+			return memberRepository.findByEmail(email)
 				.orElseThrow(() -> new BadRequestException("MemberEntity registration failed due to duplicate email."));
 		}
 	}

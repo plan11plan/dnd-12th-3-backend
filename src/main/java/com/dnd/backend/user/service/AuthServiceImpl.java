@@ -13,7 +13,7 @@ import com.dnd.backend.user.dto.LoginRequest;
 import com.dnd.backend.user.dto.RegistrationRequest;
 import com.dnd.backend.user.entity.MemberEntity;
 import com.dnd.backend.user.entity.SocialLoginType;
-import com.dnd.backend.user.repository.UserRepository;
+import com.dnd.backend.user.repository.MemberRepository;
 import com.dnd.backend.user.security.JwtTokenProvider;
 
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthServiceImpl {
 
-	private final UserRepository userRepository;
+	private final MemberRepository memberRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtTokenProvider tokenProvider;
 	private final AuthenticationManager authenticationManager;
@@ -38,7 +38,7 @@ public class AuthServiceImpl {
 			.socialLoginType(SocialLoginType.LOCAL)
 			.build();
 
-		userRepository.save(memberEntity);
+		memberRepository.save(memberEntity);
 		return "MemberEntity registered successfully";
 	}
 

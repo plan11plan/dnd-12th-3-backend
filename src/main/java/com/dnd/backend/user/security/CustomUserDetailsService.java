@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.dnd.backend.user.entity.MemberEntity;
 import com.dnd.backend.user.exception.UserNameNotFoundException;
-import com.dnd.backend.user.repository.UserRepository;
+import com.dnd.backend.user.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -14,17 +14,17 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-	private final UserRepository userRepository;
+	private final MemberRepository memberRepository;
 
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UserNameNotFoundException {
-		MemberEntity memberEntity = userRepository.findByEmail(email)
+		MemberEntity memberEntity = memberRepository.findByEmail(email)
 			.orElseThrow(() -> new UserNameNotFoundException("MemberEntity not found with email: " + email));
 		return CustomeUserDetails.create(memberEntity);
 	}
 
 	public UserDetails loadUserById(Long id) {
-		MemberEntity memberEntity = userRepository.findById(id)
+		MemberEntity memberEntity = memberRepository.findById(id)
 			.orElseThrow(() -> new UserNameNotFoundException("MemberEntity not found with id: " + id));
 		return CustomeUserDetails.create(memberEntity);
 	}

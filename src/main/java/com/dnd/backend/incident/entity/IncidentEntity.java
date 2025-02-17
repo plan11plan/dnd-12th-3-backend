@@ -44,6 +44,7 @@ public class IncidentEntity extends BaseTimeEntity {
 	private double longitude;
 	private String locationInfoName;
 
+	private int commentCount;
 	private int likeCount; // 좋아요 수 필드 추가
 
 	@Builder
@@ -61,6 +62,7 @@ public class IncidentEntity extends BaseTimeEntity {
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.locationInfoName = locationInfoName;
+		this.commentCount = 0;
 		this.likeCount = 0;
 	}
 
