@@ -17,14 +17,16 @@ import lombok.Getter;
 @Getter
 public class CustomeUserDetails implements UserDetails, OAuth2User {
 	private Long id;
+	private String name;
 	private String email;
 	private String password;
 	private Collection<? extends GrantedAuthority> authorities;
 	private Map<String, Object> attributes;
 
-	public CustomeUserDetails(Long id, String email, String password,
+	public CustomeUserDetails(Long id, String name, String email, String password,
 		Collection<? extends GrantedAuthority> authorities) {
 		this.id = id;
+		this.name = name;
 		this.email = email;
 		this.password = password;
 		this.authorities = authorities;
@@ -34,6 +36,7 @@ public class CustomeUserDetails implements UserDetails, OAuth2User {
 		List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
 		return new CustomeUserDetails(
 			memberEntity.getId(),
+			memberEntity.getName(),
 			memberEntity.getEmail(),
 			memberEntity.getPassword(),
 			authorities
@@ -73,11 +76,6 @@ public class CustomeUserDetails implements UserDetails, OAuth2User {
 
 	public void setAttributes(Map<String, Object> attributes) {
 		this.attributes = attributes;
-	}
-
-	@Override
-	public String getName() {
-		return String.valueOf(id);
 	}
 
 	@Override

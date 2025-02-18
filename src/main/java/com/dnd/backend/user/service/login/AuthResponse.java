@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthResponse {
+	private Long memberId;
+	private String name;
 	private String tokenType;            // 예: "bearer"
 	private String accessToken;          // JWT Access Token
 	private String idToken;              // ID Token (예: OpenID Connect의 id_token)
