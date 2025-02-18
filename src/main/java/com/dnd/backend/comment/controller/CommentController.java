@@ -1,4 +1,4 @@
-package com.dnd.backend.comment;
+package com.dnd.backend.comment.controller;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dnd.backend.comment.CommentEntity;
 import com.dnd.backend.comment.application.CreateCommentReplyUsecase;
 import com.dnd.backend.comment.application.CreateCommentUsecase;
 import com.dnd.backend.comment.application.DeleteCommentUsecase;
@@ -38,7 +39,11 @@ public class CommentController {
 		@PathVariable Long incidentId,
 		@RequestBody CreateCommentRequest request,
 		@AuthUser CustomeUserDetails member) {
-		createCommentUsecase.execute(incidentId, member.getId(), request.getContent());
+		createCommentUsecase.execute(
+			incidentId,
+			member.getId(),
+			request.getContent()
+		);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 
 	}
@@ -49,7 +54,11 @@ public class CommentController {
 		@PathVariable Long parentId,
 		@RequestBody CreateCommentRequest request,
 		@AuthUser CustomeUserDetails member) {
-		createCommentReplyUsecase.execute(incidentId, member.getId(), request.getContent(), parentId);
+		createCommentReplyUsecase.execute(
+			incidentId,
+			member.getId(),
+			request.getContent(),
+			parentId);
 		return ResponseEntity.ok().build();
 
 	}
@@ -76,13 +85,11 @@ public class CommentController {
 
 	@Data
 	public static class CreateCommentRequest {
-		private Long writerId;
 		private String content;
 	}
 
 	@Data
 	public static class UpdateCommentRequest {
-		private Long writerId;
 		private String content;
 	}
 

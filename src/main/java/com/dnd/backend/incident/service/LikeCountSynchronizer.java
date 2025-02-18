@@ -1,5 +1,7 @@
 package com.dnd.backend.incident.service;
 
+import static com.dnd.backend.incident.service.IncidentLikeBatchScheduler.*;
+
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -21,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 public class LikeCountSynchronizer implements ApplicationRunner {
 	private static final String LIKE_COUNT_PREFIX = "incident:like_count:";
 	private static final String USER_LIKE_PREFIX = "incident:user_likes:";
-	private static final int REDIS_TTL_DAYS = 1;
 
 	private final IncidentRepository incidentRepository;
 	private final IncidentLikeRepository incidentLikeRepository;

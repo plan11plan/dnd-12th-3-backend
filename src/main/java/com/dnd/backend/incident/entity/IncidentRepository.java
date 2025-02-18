@@ -20,4 +20,6 @@ public interface IncidentRepository {
 
 	void updateLikeCount(Long incidentId, int likeCount);
 
+	void updateCommentCount(Long incidentId, int commentCount);
+
 }

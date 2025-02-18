@@ -55,4 +55,9 @@ public class IncidentRepositoryImpl implements IncidentRepository {
 		incidentJpaRepository.updateLikeCount(incidentId, likeCount);
 	}
 
+	@Override
+	public void updateCommentCount(Long incidentId, int commentCount) {
+		incidentJpaRepository.updateCommentCount(incidentId, commentCount);
+	}
+
 }
