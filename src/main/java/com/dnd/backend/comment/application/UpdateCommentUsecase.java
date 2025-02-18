@@ -5,8 +5,8 @@ import org.springframework.stereotype.Component;
 import com.dnd.backend.comment.CommentWriteService;
 import com.dnd.backend.incident.entity.IncidentEntity;
 import com.dnd.backend.incident.service.IncidentReadService;
-import com.dnd.backend.user.service.d.UserEntity;
-import com.dnd.backend.user.service.d.UserReadService;
+import com.dnd.backend.user.entity.MemberEntity;
+import com.dnd.backend.user.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -15,11 +15,11 @@ import lombok.RequiredArgsConstructor;
 public class UpdateCommentUsecase {
 	private final CommentWriteService commentWriteService;
 	private final IncidentReadService incidentReadService;
-	private final UserReadService userReadService;
+	private final MemberService memberService;
 
 	public void execute(Long incidentId, Long commentId, Long writerId, String content) {
 		IncidentEntity incident = incidentReadService.getIncident(incidentId);
-		UserEntity user = userReadService.getUser(writerId);
+		MemberEntity member = memberService.getMember(writerId);
 		commentWriteService.updateComment(commentId, content);
 	}
 }
