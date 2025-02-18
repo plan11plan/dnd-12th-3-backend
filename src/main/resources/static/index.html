@@ -1,142 +1,142 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Social Login & Registration Test</title>
-    <!-- Google Identity Services 라이브러리 로드 -->
-    <script async defer src="https://accounts.google.com/gsi/client"></script>
-    <!-- Kakao JavaScript SDK 로드 -->
-    <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
-</head>
-<body>
-<h1>Social Login & Registration Test</h1>
-<div id="idTokenDisplay" style="margin-top: 20px; font-size: 16px; color: blue;"></div>
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+<!--<head>-->
+<!--    <meta charset="utf-8">-->
+<!--    <title>Social Login & Registration Test</title>-->
+<!--    &lt;!&ndash; Google Identity Services 라이브러리 로드 &ndash;&gt;-->
+<!--    <script async defer src="https://accounts.google.com/gsi/client"></script>-->
+<!--    &lt;!&ndash; Kakao JavaScript SDK 로드 &ndash;&gt;-->
+<!--    <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h1>Social Login & Registration Test</h1>-->
+<!--<div id="idTokenDisplay" style="margin-top: 20px; font-size: 16px; color: blue;"></div>-->
 
-<!-- Google 섹션 -->
-<h2>Google</h2>
-<!-- 로그인/회원가입 선택 -->
-<label>
-    <input checked name="googleAction" type="radio" value="login"> Login
-</label>
-<label>
-    <input name="googleAction" type="radio" value="register"> Register
-</label>
-<!-- Google Sign-In 버튼 (자동 렌더링) -->
-<div data-callback="handleGoogleCredentialResponse"
-     data-client_id="817554415395-4sf5r7gg1pnm8vhtht7etkvo36266edh.apps.googleusercontent.com"
-     data-context="signin"
-     data-ux_mode="popup"
-     id="g_id_onload">
-</div>
-<div class="g_id_signin"
-     data-logo_alignment="left"
-     data-shape="rectangular"
-     data-size="large"
-     data-text="signin_with"
-     data-theme="outline"
-     data-type="standard">
-</div>
+<!--&lt;!&ndash; Google 섹션 &ndash;&gt;-->
+<!--<h2>Google</h2>-->
+<!--&lt;!&ndash; 로그인/회원가입 선택 &ndash;&gt;-->
+<!--<label>-->
+<!--    <input checked name="googleAction" type="radio" value="login"> Login-->
+<!--</label>-->
+<!--<label>-->
+<!--    <input name="googleAction" type="radio" value="register"> Register-->
+<!--</label>-->
+<!--&lt;!&ndash; Google Sign-In 버튼 (자동 렌더링) &ndash;&gt;-->
+<!--<div data-callback="handleGoogleCredentialResponse"-->
+<!--     data-client_id="817554415395-4sf5r7gg1pnm8vhtht7etkvo36266edh.apps.googleusercontent.com"-->
+<!--     data-context="signin"-->
+<!--     data-ux_mode="popup"-->
+<!--     id="g_id_onload">-->
+<!--</div>-->
+<!--<div class="g_id_signin"-->
+<!--     data-logo_alignment="left"-->
+<!--     data-shape="rectangular"-->
+<!--     data-size="large"-->
+<!--     data-text="signin_with"-->
+<!--     data-theme="outline"-->
+<!--     data-type="standard">-->
+<!--</div>-->
 
-<!-- Kakao 섹션 -->
-<h2>Kakao</h2>
-<!-- 로그인/회원가입 선택 -->
-<label>
-    <input checked name="kakaoAction" type="radio" value="login"> Login
-</label>
-<label>
-    <input name="kakaoAction" type="radio" value="register"> Register
-</label>
-<!-- Kakao 로그인 버튼 -->
-<button id="kakaoLoginBtn">Kakao Login/Register</button>
+<!--&lt;!&ndash; Kakao 섹션 &ndash;&gt;-->
+<!--<h2>Kakao</h2>-->
+<!--&lt;!&ndash; 로그인/회원가입 선택 &ndash;&gt;-->
+<!--<label>-->
+<!--    <input checked name="kakaoAction" type="radio" value="login"> Login-->
+<!--</label>-->
+<!--<label>-->
+<!--    <input name="kakaoAction" type="radio" value="register"> Register-->
+<!--</label>-->
+<!--&lt;!&ndash; Kakao 로그인 버튼 &ndash;&gt;-->
+<!--<button id="kakaoLoginBtn">Kakao Login/Register</button>-->
 
-<script>
-    // DOMContentLoaded 이벤트에서 Kakao 초기화
-    document.addEventListener('DOMContentLoaded', function () {
-        // Kakao 초기화 (Kakao Developers에서 발급받은 JavaScript Key 사용)
-        Kakao.init('5e5d9c60a70ced4f560fb643a2aac513');
-        console.log("Kakao init status:", Kakao.isInitialized());
-    });
+<!--<script>-->
+<!--    // DOMContentLoaded 이벤트에서 Kakao 초기화-->
+<!--    document.addEventListener('DOMContentLoaded', function () {-->
+<!--        // Kakao 초기화 (Kakao Developers에서 발급받은 JavaScript Key 사용)-->
+<!--        Kakao.init('5e5d9c60a70ced4f560fb643a2aac513');-->
+<!--        console.log("Kakao init status:", Kakao.isInitialized());-->
+<!--    });-->
 
-    // Google 로그인/회원가입 콜백 함수
-    function handleGoogleCredentialResponse(response) {
-        console.log("Google Credential received:", response.credential);
-        // 선택된 액션 확인 (login 또는 register)
-        var action = document.querySelector('input[name="googleAction"]:checked').value;
-        var endpoint = (action === "login")
-            ? "http://13.124.31.82:8080/api/oauth/google"
-            : "http://13.124.31.82:8080/api/oauth/google";
+<!--    // Google 로그인/회원가입 콜백 함수-->
+<!--    function handleGoogleCredentialResponse(response) {-->
+<!--        console.log("Google Credential received:", response.credential);-->
+<!--        // 선택된 액션 확인 (login 또는 register)-->
+<!--        var action = document.querySelector('input[name="googleAction"]:checked').value;-->
+<!--        var endpoint = (action === "login")-->
+<!--            ? "http://localhost:8080/api/oauth/google"-->
+<!--            : "http://localhost:8080/api/oauth/google";-->
 
-        // 백엔드에 토큰 전송
-        fetch(endpoint, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({token: response.credential})
-        })
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error('Network response was not ok: ' + res.status);
-                }
-                return res.json();
-            })
-            .then(data => {
-                console.log("Google backend response:", data);
-                // idToken을 화면에 표시
-                document.getElementById("idTokenDisplay").innerText = "idToken: " + data.idToken;
-                alert("Google " + action + " successful!\nResponse: " + JSON.stringify(data));
-            })
-            .catch(error => {
-                console.error("Google Error:", error);
-                alert("Google Error: " + error);
-            });
-    }
+<!--        // 백엔드에 토큰 전송-->
+<!--        fetch(endpoint, {-->
+<!--            method: "POST",-->
+<!--            headers: {-->
+<!--                "Content-Type": "application/json"-->
+<!--            },-->
+<!--            body: JSON.stringify({token: response.credential})-->
+<!--        })-->
+<!--            .then(res => {-->
+<!--                if (!res.ok) {-->
+<!--                    throw new Error('Network response was not ok: ' + res.status);-->
+<!--                }-->
+<!--                return res.json();-->
+<!--            })-->
+<!--            .then(data => {-->
+<!--                console.log("Google backend response:", data);-->
+<!--                // idToken을 화면에 표시-->
+<!--                document.getElementById("idTokenDisplay").innerText = "idToken: " + data.idToken;-->
+<!--                alert("Google " + action + " successful!\nResponse: " + JSON.stringify(data));-->
+<!--            })-->
+<!--            .catch(error => {-->
+<!--                console.error("Google Error:", error);-->
+<!--                alert("Google Error: " + error);-->
+<!--            });-->
+<!--    }-->
 
-    // Kakao 로그인/회원가입 버튼 이벤트 핸들러
-    document.getElementById("kakaoLoginBtn").addEventListener("click", function () {
-        // 선택된 액션 확인 (login 또는 register)
-        var action = document.querySelector('input[name="kakaoAction"]:checked').value;
+<!--    // Kakao 로그인/회원가입 버튼 이벤트 핸들러-->
+<!--    document.getElementById("kakaoLoginBtn").addEventListener("click", function () {-->
+<!--        // 선택된 액션 확인 (login 또는 register)-->
+<!--        var action = document.querySelector('input[name="kakaoAction"]:checked').value;-->
 
-        Kakao.Auth.login({
-            success: function (authObj) {
-                console.log("Kakao Access Token received:", authObj.access_token);
-                var endpoint = (action === "login")
-                    ? "http://13.124.31.82:8080/api/oauth/kakao"
-                    : "http://13.124.31.82:8080/api/oauth/kakao";
+<!--        Kakao.Auth.login({-->
+<!--            success: function (authObj) {-->
+<!--                console.log("Kakao Access Token received:", authObj.access_token);-->
+<!--                var endpoint = (action === "login")-->
+<!--                    ? "http://localhost:8080/api/oauth/kakao"-->
+<!--                    : "http://localhost:8080/api/oauth/kakao";-->
 
-                // 백엔드에 Kakao access token 전송
-                fetch(endpoint, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({token: authObj.access_token})
-                })
-                    .then(res => {
-                        if (!res.ok) {
-                            throw new Error('Network response was not ok: ' + res.status);
-                        }
-                        return res.json();
-                    })
-                    .then(data => {
-                        console.log("Kakao backend response:", data);
-                        alert("Kakao " + action + " successful!\nResponse: " + JSON.stringify(data));
-                    })
-                    .catch(error => {
-                        console.error("Kakao Error:", error);
-                        alert("Kakao Error: " + error);
-                    });
-            },
-            fail: function (err) {
-                console.error("Kakao Auth Failed:", err);
-                alert("Kakao Auth Failed: " + JSON.stringify(err));
-            },
-            // 필요한 scope 추가
-            scope: "profile_nickname, profile_image",
-            // 팝업 모드로 설정
-            throughTalk: false
-        });
-    });
-</script>
-</body>
-</html>
+<!--                // 백엔드에 Kakao access token 전송-->
+<!--                fetch(endpoint, {-->
+<!--                    method: "POST",-->
+<!--                    headers: {-->
+<!--                        "Content-Type": "application/json"-->
+<!--                    },-->
+<!--                    body: JSON.stringify({token: authObj.access_token})-->
+<!--                })-->
+<!--                    .then(res => {-->
+<!--                        if (!res.ok) {-->
+<!--                            throw new Error('Network response was not ok: ' + res.status);-->
+<!--                        }-->
+<!--                        return res.json();-->
+<!--                    })-->
+<!--                    .then(data => {-->
+<!--                        console.log("Kakao backend response:", data);-->
+<!--                        alert("Kakao " + action + " successful!\nResponse: " + JSON.stringify(data));-->
+<!--                    })-->
+<!--                    .catch(error => {-->
+<!--                        console.error("Kakao Error:", error);-->
+<!--                        alert("Kakao Error: " + error);-->
+<!--                    });-->
+<!--            },-->
+<!--            fail: function (err) {-->
+<!--                console.error("Kakao Auth Failed:", err);-->
+<!--                alert("Kakao Auth Failed: " + JSON.stringify(err));-->
+<!--            },-->
+<!--            // 필요한 scope 추가-->
+<!--            scope: "profile_nickname, profile_image",-->
+<!--            // 팝업 모드로 설정-->
+<!--            throughTalk: false-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
