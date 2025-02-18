@@ -33,4 +33,7 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
 		"left join fetch c.children " +
 		"where c.id in :parentIds")
 	List<CommentEntity> findParentCommentsWithChildrenByIds(@Param("parentIds") List<Long> parentIds);
+
+	@Query("SELECT c.incidentId, COUNT(c) FROM CommentEntity c GROUP BY c.incidentId")
+	List<Object[]> countCommentsGroupedByIncident();
 }
