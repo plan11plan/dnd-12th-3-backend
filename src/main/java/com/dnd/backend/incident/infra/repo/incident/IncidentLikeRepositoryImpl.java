@@ -41,4 +41,9 @@ public class IncidentLikeRepositoryImpl implements IncidentLikeRepository {
 		return incidentLikeJpaRepository.findUserIdsByIncidentAndStatus(incidentId, status);
 	}
 
+	@Override
+	public boolean existsByUserIdAndIncidentId(Long writerId, Long incidentId) {
+		return incidentLikeJpaRepository.existsByWriterIdAndIncidentId(writerId, incidentId);
+	}
+
 }

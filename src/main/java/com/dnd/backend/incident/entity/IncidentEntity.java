@@ -43,6 +43,8 @@ public class IncidentEntity extends BaseTimeEntity {
 
 	private double longitude;
 	private String locationInfoName;
+	private String roadNameAddress;
+	private String lotNumberAddress;
 
 	private int commentCount;
 	private int likeCount; // 좋아요 수 필드 추가
@@ -54,7 +56,9 @@ public class IncidentEntity extends BaseTimeEntity {
 		IncidentCategory incidentCategory,
 		double latitude,
 		double longitude,
-		String locationInfoName
+		String locationInfoName,
+		String roadNameAddress, // 도로명 주소 파라미터 추가
+		String lotNumberAddress // 번지주소 파라미터 추가
 	) {
 		this.writerId = Objects.requireNonNull(writerId);
 		this.description = Objects.requireNonNull(description);
@@ -62,18 +66,24 @@ public class IncidentEntity extends BaseTimeEntity {
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.locationInfoName = locationInfoName;
+		this.roadNameAddress = roadNameAddress;
+		this.lotNumberAddress = lotNumberAddress;
 		this.commentCount = 0;
 		this.likeCount = 0;
 	}
 
 	public final IncidentEntity updateDetails(
 		String description,
+		String locationInfoName,
 		String roadNameAddress,
+		String lotNumberAddress,
 		IncidentCategory incidentCategory
 	) {
 		return this.toBuilder()
 			.description(description)
-			.locationInfoName(roadNameAddress)
+			.locationInfoName(locationInfoName)
+			.roadNameAddress(roadNameAddress)
+			.lotNumberAddress(lotNumberAddress)
 			.incidentCategory(incidentCategory)
 			.build();
 	}

@@ -21,4 +21,6 @@ public interface IncidentLikeJpaRepository extends JpaRepository<IncidentLikeEnt
 
 	@Query("SELECT i.writerId FROM IncidentLikeEntity i WHERE i.incidentId = :incidentId AND i.likeStatus = :status")
 	List<Long> findUserIdsByIncidentAndStatus(@Param("incidentId") Long incidentId, @Param("status") LikeStatus status);
+
+	boolean existsByWriterIdAndIncidentId(Long writerId, Long incidentId);
 }

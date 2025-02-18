@@ -26,6 +26,11 @@ public record WriteIncidentCommand(
 
 	@Min(value = -180, message = "경도는 -180 이상이어야 합니다.")
 	@Max(value = 180, message = "경도는 180 이하여야 합니다.")
-	double longitude
+	double longitude,
+
+	@NotBlank
+	String roadNameAddress,
+	@NotBlank
+	String lotNumberAddress
 ) {
 }

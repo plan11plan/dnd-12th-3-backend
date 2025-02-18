@@ -18,6 +18,8 @@ public record IncidentDto(
 	String locationInfoName,
 	int likeCount,
 	int commentCount,
+	String roadNameAddress,
+	String lotNumberAddress,
 	List<MediaFileInfo> mediaFiles
 ) {
 	// Entity -> DTO 변환을 위한 factory 메서드
@@ -34,6 +36,8 @@ public record IncidentDto(
 			incident.getLocationInfoName(),
 			incident.getLikeCount(),
 			incident.getCommentCount(),
+			incident.getRoadNameAddress(),
+			incident.getLotNumberAddress(),
 			mediaFiles
 		);
 	}

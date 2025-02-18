@@ -30,6 +30,8 @@ public class IncidentWriteService {
 			.writerId(writerId)
 			.description(command.description())
 			.locationInfoName(command.locationInfoName())
+			.roadNameAddress(command.roadNameAddress())
+			.lotNumberAddress(command.lotNumberAddress())
 			.incidentCategory(disasterGroup)
 			.latitude(command.latitude())
 			.longitude(command.longitude())
@@ -47,7 +49,9 @@ public class IncidentWriteService {
 			throw new InvalidDescriptionException();
 		}
 
-		incidentEntity = incidentEntity.updateDetails(command.description(), command.locationInfoName(),
+		incidentEntity = incidentEntity.updateDetails(
+			command.description(),
+			command.locationInfoName(), command.roadNameAddress(), command.locationInfoName(),
 			IncidentCategory.mapToDisasterGroup(command.incidentCategory()));
 		incidentRepository.save(incidentEntity);
 	}
