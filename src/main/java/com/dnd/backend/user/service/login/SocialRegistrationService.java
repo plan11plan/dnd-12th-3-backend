@@ -41,7 +41,7 @@ public class SocialRegistrationService {
 		long refreshTokenExpiresIn = tokenProvider.getRefreshTokenExpiry();
 		String scope = tokenProvider.getScope();
 		log.info("🔥 jwt 토큰 = {}", accessToken);
-		return new AuthResponse(id, name, accessToken, "bearer", idToken, expiresIn, refreshToken,
+		return new AuthResponse(id, name, "bearer", accessToken, idToken, expiresIn, refreshToken,
 			refreshTokenExpiresIn, scope);
 	}
 }
