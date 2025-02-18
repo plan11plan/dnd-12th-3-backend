@@ -1,5 +1,6 @@
 package com.dnd.backend.comment.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -100,6 +101,7 @@ public class CommentController {
 		private Long writerId;
 		private String content;
 		private Long parentId;
+		private LocalDateTime createdAt;
 		private List<CommentResponse> children;
 
 		// includeChildren 플래그에 따라 자식 매핑 여부 결정
@@ -109,6 +111,7 @@ public class CommentController {
 			this.writerId = entity.getWriterId();
 			this.content = entity.getContent();
 			this.parentId = entity.getParent() != null ? entity.getParent().getId() : null;
+			this.createdAt = entity.getCreatedAt();
 			if (includeChildren && entity.getChildren() != null && !entity.getChildren().isEmpty()) {
 				this.children = entity.getChildren().stream()
 					.map(child -> new CommentResponse(child, true))

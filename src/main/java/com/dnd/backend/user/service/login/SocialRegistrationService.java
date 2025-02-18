@@ -30,10 +30,10 @@ public class SocialRegistrationService {
 		Authentication authentication = new UsernamePasswordAuthenticationToken(principal, null,
 			principal.getAuthorities());
 
-		return generateAuthResponse(authentication);
+		return generateAuthResponse(authentication, principal.getId(), principal.getName());
 	}
 
-	private AuthResponse generateAuthResponse(Authentication authentication) {
+	private AuthResponse generateAuthResponse(Authentication authentication, Long id, String name) {
 		String accessToken = tokenProvider.generateAccessToken(authentication);
 		String idToken = tokenProvider.generateIdToken(authentication);
 		String refreshToken = tokenProvider.generateRefreshToken(authentication);
@@ -41,6 +41,7 @@ public class SocialRegistrationService {
 		long refreshTokenExpiresIn = tokenProvider.getRefreshTokenExpiry();
 		String scope = tokenProvider.getScope();
 		log.info("🔥 jwt 토큰 = {}", accessToken);
-		return new AuthResponse("bearer", accessToken, idToken, expiresIn, refreshToken, refreshTokenExpiresIn, scope);
+		return new AuthResponse(id, name, accessToken, "bearer", idToken, expiresIn, refreshToken,
+			refreshTokenExpiresIn, scope);
 	}
 }
