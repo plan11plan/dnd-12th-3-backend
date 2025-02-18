@@ -63,8 +63,8 @@
         // 선택된 액션 확인 (login 또는 register)
         var action = document.querySelector('input[name="googleAction"]:checked').value;
         var endpoint = (action === "login")
-            ? "https://localhost:8443/api/oauth/google"
-            : "https://localhost:8443/api/oauth/google";
+            ? "http://13.124.31.82:8080/api/oauth/google"
+            : "http://13.124.31.82:8080/api/oauth/google";
 
         // 백엔드에 토큰 전송
         fetch(endpoint, {
@@ -101,8 +101,8 @@
             success: function (authObj) {
                 console.log("Kakao Access Token received:", authObj.access_token);
                 var endpoint = (action === "login")
-                    ? "https://localhost:8443/api/oauth/kakao"
-                    : "https://localhost:8443/api/oauth/kakao";
+                    ? "http://13.124.31.82:8080/api/oauth/kakao"
+                    : "http://13.124.31.82:8080/api/oauth/kakao";
 
                 // 백엔드에 Kakao access token 전송
                 fetch(endpoint, {
