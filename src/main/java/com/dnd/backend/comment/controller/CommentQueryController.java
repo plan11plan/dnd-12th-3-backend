@@ -1,4 +1,4 @@
-package com.dnd.backend.comment;
+package com.dnd.backend.comment.controller;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dnd.backend.comment.CommentEntity;
 import com.dnd.backend.comment.application.GetCommentUsecase;
 import com.dnd.backend.comment.application.GetCommentsUsecase;
 import com.dnd.backend.comment.application.GetParentCommentsUsecase;

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.dnd.backend.incident.entity.IncidentEntity;
 
@@ -29,4 +30,9 @@ public interface IncidentJpaRepository extends JpaRepository<IncidentEntity, Lon
 	boolean existsByWriterIdAndId(Long writerId, Long incidentId);
 
 	void deleteByWriterIdAndId(Long writerId, Long incidentId);
+
+	@Modifying
+	@Transactional
+	@Query("UPDATE IncidentEntity i SET i.commentCount = :commentCount WHERE i.id = :incidentId")
+	void updateCommentCount(@Param("incidentId") Long incidentId, @Param("commentCount") int commentCount);
 }
