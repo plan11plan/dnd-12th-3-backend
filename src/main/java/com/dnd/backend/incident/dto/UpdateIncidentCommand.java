@@ -14,6 +14,11 @@ public record UpdateIncidentCommand(
 	@Size(min = 1, max = 100, message = "위치 정보는 1자 이상 100자 이하로 입력해주세요.")
 	String locationInfoName,
 
+	@NotBlank(message = "도로명 주소를 입력해주세요.")
+
+	String roadNameAddress,
+	@NotBlank(message = "번지 주소를 입력해주세요.")
+	String lotNumberAddress,
 	@NotBlank(message = "재난 그룹을 선택해주세요.")
 	@ValidIncidentCategory
 	String incidentCategory
