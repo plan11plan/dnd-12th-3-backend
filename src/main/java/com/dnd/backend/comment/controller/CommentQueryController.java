@@ -11,12 +11,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dnd.backend.comment.CommentEntity;
+import com.dnd.backend.comment.CommentResponse;
 import com.dnd.backend.comment.application.GetCommentUsecase;
 import com.dnd.backend.comment.application.GetCommentsUsecase;
 import com.dnd.backend.comment.application.GetParentCommentsUsecase;
 import com.dnd.backend.comment.application.GetParentCommentsWithChildrenUsecase;
 import com.dnd.backend.support.util.CursorRequest;
 import com.dnd.backend.support.util.CursorResponse;
+import com.dnd.backend.user.security.CustomeUserDetails;
+import com.dnd.backend.user.security.customAuthenticationPrincipal.AuthUser;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,17 +38,18 @@ public class CommentQueryController {
 	 * 부모 댓글만 커서 조회 (대댓글 제외)
 	 */
 	@GetMapping("/{incidentId}/comments/cursor")
-	public ResponseEntity<CursorResponse<CommentController.CommentResponse>> getParentComments(
+	public CursorResponse<CommentResponse> getParentComments(
 		@PathVariable Long incidentId,
-		@ModelAttribute CursorRequest cursorRequest) {
+		@ModelAttribute CursorRequest cursorRequest,
+		@AuthUser CustomeUserDetails member // 로그인 사용자 정보
+	) {
+		// member가 null일 수 있으므로, id 안전처리
+		Long currentUserId = (member != null) ? member.getId() : null;
 
-		CursorResponse<?> response = getParentCommentsUsecase.execute(incidentId, cursorRequest);
-		// 부모 댓글만 조회하므로 includeChildren=false
-		List<CommentController.CommentResponse> dtos = ((List<?>)response.contents()).stream()
-			.map(entity -> new CommentController.CommentResponse((CommentEntity)entity, false))
-			.collect(Collectors.toList());
-
-		return ResponseEntity.ok(new CursorResponse<>(response.nextCursorRequest(), dtos));
+		// Usecase 호출 시 userId 넘김
+		CursorResponse<CommentResponse> response = getParentCommentsUsecase.execute(incidentId, cursorRequest,
+			currentUserId);
+		return response;
 	}
 
 	/**
@@ -69,24 +73,29 @@ public class CommentQueryController {
 	 * 단건 댓글 조회
 	 */
 	@GetMapping("/{incidentId}/comments/{commentId}")
-	public ResponseEntity<CommentController.CommentResponse> getComment(
+	public ResponseEntity<CommentResponse> getComment(
 		@PathVariable Long incidentId,
-		@PathVariable Long commentId) {
-		CommentEntity comment = getCommentUsecase.execute(commentId);
-		return ResponseEntity.ok(new CommentController.CommentResponse(comment));
+		@PathVariable Long commentId,
+		@AuthUser CustomeUserDetails member
+	) {
+		Long currentUserId = (member != null) ? member.getId() : null;
+		// usecase가 CommentResponse를 반환하도록 변경
+		CommentResponse commentResponse = getCommentUsecase.execute(commentId, currentUserId);
+		return ResponseEntity.ok(commentResponse);
 	}
 
-	/**
-	 * 게시글에 대한 상위 댓글 목록 조회
-	 */
 	@GetMapping("/{incidentId}/comments")
-	public ResponseEntity<List<CommentController.CommentResponse>> getCommentsByIncident(
-		@PathVariable Long incidentId) {
-		List<CommentEntity> comments = getCommentsUsecase.execute(incidentId);
-		List<CommentController.CommentResponse> responses = comments.stream()
-			.map(CommentController.CommentResponse::new)
-			.collect(Collectors.toList());
-		return ResponseEntity.ok(responses);
+	public ResponseEntity<List<CommentResponse>> getCommentsByIncident(
+		@PathVariable Long incidentId,
+		@AuthUser CustomeUserDetails member // 로그인 사용자 정보 주입
+	) {
+		// member가 null일 수도 있으니 체크
+		Long currentUserId = (member != null) ? member.getId() : null;
+
+		// Usecase 호출 시 userId 넘김
+		var comments = getCommentsUsecase.execute(incidentId, currentUserId);
+
+		return ResponseEntity.ok(comments);
 	}
 
 }

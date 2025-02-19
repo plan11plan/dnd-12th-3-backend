@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.dnd.backend.support.kakao.KakaoAddressService;
 import com.dnd.backend.user.dto.AddressDTO;
 import com.dnd.backend.user.entity.Address;
 import com.dnd.backend.user.entity.MemberEntity;
@@ -25,6 +26,7 @@ public class MemberService {
 	private final MemberRepository memberRepository;
 	private final AddressRepository addressRepository;
 	private final SecurityService securityService;
+	private final KakaoAddressService kakaoAddressService;
 
 	public MemberEntity getMember(Long memberId) {
 		return memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
@@ -90,8 +92,26 @@ public class MemberService {
 		return memberEntities;
 	}
 
-	public List<Address> getMyAddress() {
+	// public List<Address> getMyAddress() {
+	// 	MemberEntity authenticatedUser = securityService.getAuthenticatedUser();
+	// 	return authenticatedUser.getAddresses();
+	// }
+	public List<AddressDTO> getMyAddress() {
 		MemberEntity authenticatedUser = securityService.getAuthenticatedUser();
-		return authenticatedUser.getAddresses();
+		List<Address> addresses = authenticatedUser.getAddresses();
+
+		// Address 엔티티를 AddressDTO로 변환하며, addressName을 동 단위로 변환
+		return addresses.stream()
+			.map(address -> {
+				String dongName = kakaoAddressService.convertCoordinatesToDongName(address.getLatitude(),
+					address.getLongitude());
+				return AddressDTO.builder()
+					.addressId(address.getId())
+					.addressName(dongName) // 동 단위로 변환된 주소명
+					.latitude(address.getLatitude())
+					.longitude(address.getLongitude())
+					.build();
+			})
+			.collect(Collectors.toList());
 	}
 }
