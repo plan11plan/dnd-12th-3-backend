@@ -59,11 +59,11 @@ public class SecurityConfig {
 				).permitAll()
 				.anyRequest().authenticated()
 			)
-			.oauth2Login(oauth2 -> oauth2
-				.userInfoEndpoint(userInfoEndpoint ->
-					userInfoEndpoint.userService(customOAuth2UserService))
-				.successHandler(oAuth2AuthenticationSuccessHandler)
-			)
+			// .oauth2Login(oauth2 -> oauth2
+			// 	.userInfoEndpoint(userInfoEndpoint ->
+			// 		userInfoEndpoint.userService(customOAuth2UserService))
+			// 	.successHandler(oAuth2AuthenticationSuccessHandler)
+			// )
 			.exceptionHandling(exceptionHandling -> exceptionHandling
 				.authenticationEntryPoint((request, response, authException) -> {
 					response.setContentType("application/json;charset=UTF-8");
