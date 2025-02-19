@@ -38,6 +38,54 @@ public class KakaoAddressService implements GeocodingService {
 		}
 	}
 
+	/**
+	 * 2) "...동" 정보만 추출해서 가져오기 위한 메서드 추가
+	 */
+	public String convertCoordinatesToDongName(Double lat, Double lng) {
+		if (lat == null || lng == null) {
+			return null;
+		}
+
+		String requestUrl = String.format("%s?x=%f&y=%f", KAKAO_COORD2ADDRESS_URL, lng, lat);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Authorization", "KakaoAK " + kakaoRestApiKey);
+		headers.setContentType(MediaType.APPLICATION_JSON);
+
+		RestTemplate restTemplate = new RestTemplate();
+		try {
+			HttpEntity<String> entity = new HttpEntity<>(headers);
+			ResponseEntity<JsonNode> response = restTemplate.exchange(
+				requestUrl,
+				HttpMethod.GET,
+				entity,
+				JsonNode.class
+			);
+
+			if (response.getStatusCode() == HttpStatus.OK) {
+				JsonNode body = response.getBody();
+				if (body != null && body.has("documents") && body.get("documents").size() > 0) {
+					JsonNode firstDoc = body.get("documents").get(0);
+					JsonNode addressNode = firstDoc.get("address");
+					if (addressNode != null && !addressNode.isNull()) {
+						// 여기서 "region_3depth_name"만 추출
+						return addressNode.get("region_3depth_name").asText();
+					}
+				} else {
+					log.info("No address information found (lat={}, lng={})", lat, lng);
+					return null;
+				}
+			} else {
+				log.warn("Request failed with status code: {}", response.getStatusCode());
+				return null;
+			}
+		} catch (Exception e) {
+			log.error("Error occurred while calling Kakao API: {}", e.getMessage(), e);
+			return null;
+		}
+		return null;
+	}
+
 	public AddressResponse convertCoordinatesToAddress(Double lat, Double lng) {
 		// 파라미터 검증
 		if (lat == null || lng == null) {
