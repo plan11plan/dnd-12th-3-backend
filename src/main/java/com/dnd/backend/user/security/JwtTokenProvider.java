@@ -86,24 +86,6 @@ public class JwtTokenProvider {
 	}
 
 	/**
-	 * 토큰이 ID 토큰인지 확인하는 메서드
-	 * ID 토큰은 "type" 클레임이 "id"인 토큰으로 식별
-	 */
-	public boolean isIdToken(String token) {
-		try {
-			Claims claims = Jwts.parser()
-				.setSigningKey(jwtSecret)
-				.parseClaimsJws(token)
-				.getBody();
-
-			// "type" 클레임이 존재하고 값이 "id"인지 확인
-			return claims.containsKey("type") && "id".equals(claims.get("type"));
-		} catch (JwtException | IllegalArgumentException e) {
-			return false;
-		}
-	}
-
-	/**
 	 * 새로운 Refresh Token 생성 (만료시간: refreshExpirationSec, 초 단위)
 	 */
 	public String generateRefreshToken(Authentication authentication) {
