@@ -65,22 +65,22 @@ public class CommentController {
 	}
 
 	@PutMapping("/{incidentId}/comments/{commentId}")
-	public ResponseEntity<Void> updateComment(
+	public void updateComment(
 		@PathVariable Long incidentId,
 		@PathVariable Long commentId,
 		@RequestBody UpdateCommentRequest request,
 		@AuthUser CustomeUserDetails member) {
 		updateCommentUsecase.execute(incidentId, commentId, member.getId(), request.getContent());
-		return ResponseEntity.ok().build();
+		// return ResponseEntity.ok().build();
 
 	}
 
 	@DeleteMapping("/{incidentId}/comments/{commentId}")
-	public ResponseEntity<Void> deleteComment(@PathVariable Long incidentId,
+	public void deleteComment(@PathVariable Long incidentId,
 		@PathVariable Long commentId,
 		@AuthUser CustomeUserDetails member) {
 		deleteCommentUsecase.execute(incidentId, commentId, member.getId());
-		return ResponseEntity.noContent().build();
+		// return ResponseEntity.noContent().build();
 
 	}
 
