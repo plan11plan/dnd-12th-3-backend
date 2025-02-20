@@ -16,7 +16,6 @@ import com.dnd.backend.user.exception.ResourceNotFoundException;
 import com.dnd.backend.user.exception.UnauthorizedException;
 import com.dnd.backend.user.repository.AddressRepository;
 import com.dnd.backend.user.repository.MemberRepository;
-import com.dnd.backend.user.service.d.UserNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,7 +29,7 @@ public class MemberService {
 	private final KakaoAddressService kakaoAddressService;
 
 	public MemberEntity getMember(Long memberId) {
-		return memberRepository.findById(memberId).orElseThrow(() -> new UserNotFoundException());
+		return memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
 	}
 
 	public Map<Long, MemberEntity> getMembersByIds(List<Long> memberIds) {
