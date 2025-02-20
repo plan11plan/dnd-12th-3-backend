@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dnd.backend.incident.application.ToggleLikeIncidentUsecase;
 import com.dnd.backend.incident.service.IncidentLikeReadService;
+import com.dnd.backend.user.security.CustomeUserDetails;
+import com.dnd.backend.user.security.customAuthenticationPrincipal.AuthUser;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,7 +25,9 @@ public class IncidentLikeController {
 	private final ToggleLikeIncidentUsecase toggleLikeIncidentUsecase;
 
 	@PostMapping("/{incidentId}/likes")
-	public String toggleLike(@PathVariable Long incidentId, @RequestParam Long userId) {
+	public String toggleLike(@PathVariable Long incidentId,
+		@AuthUser CustomeUserDetails user) {
+		Long userId = user.getId();
 		return toggleLikeIncidentUsecase.execute(userId, incidentId);
 	}
 

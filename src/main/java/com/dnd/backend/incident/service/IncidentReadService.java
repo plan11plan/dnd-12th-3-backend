@@ -10,11 +10,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.dnd.backend.incident.dto.IncidentDistanceDto;
+import com.dnd.backend.incident.dto.IncidentInfoDto;
 import com.dnd.backend.incident.entity.IncidentEntity;
 import com.dnd.backend.incident.entity.IncidentRepository;
 import com.dnd.backend.incident.exception.IncidentNotFoundException;
 import com.dnd.backend.support.util.CursorRequest;
 import com.dnd.backend.support.util.CursorResponse;
+import com.dnd.backend.user.entity.MemberEntity;
+import com.dnd.backend.user.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,19 +25,71 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class IncidentReadService {
 	private final IncidentRepository incidentRepository;
+	private final MemberService memberService;
+	private final IncidentLikeReadService incidentLikeReadService;
 
 	public List<IncidentEntity> findAll() {
 		return incidentRepository.findAll().orElseThrow(IncidentNotFoundException::new);
 	}
 
-	public CursorResponse<IncidentEntity> getIncidents(Long writerId, CursorRequest cursorRequest) {
+	public CursorResponse<IncidentInfoDto> findIncidentsWithinScreenByCursor(
+		double topRightX, double topRightY,
+		double bottomLeftX, double bottomLeftY,
+		CursorRequest cursorRequest
+	) {
+		MemberEntity currentMember = memberService.getCurrentMember();
+		var pageable = PageRequest.of(
+			0,
+			cursorRequest.size(),
+			Sort.by(DESC, "id")
+		);
+
+		List<IncidentEntity> incidents;
+		if (cursorRequest.hasKey()) {
+			incidents = incidentRepository.findAllWithinScreenAndIdLessThan(
+					topRightX, topRightY, bottomLeftX, bottomLeftY,
+					cursorRequest.key(), pageable)
+				.orElseThrow(IncidentNotFoundException::new);
+		} else {
+			incidents = incidentRepository.findAllWithinScreen(
+					topRightX, topRightY, bottomLeftX, bottomLeftY,
+					pageable)
+				.orElseThrow(IncidentNotFoundException::new);
+		}
+
+		var nextKey = incidents.stream()
+			.mapToLong(IncidentEntity::getId)
+			.min()
+			.orElse(CursorRequest.NONE_KEY);
+
+		List<IncidentInfoDto> incidentInfoDtos = incidents.stream()
+			.map(incident -> new IncidentInfoDto(
+				incident,
+				incident.getWriterId().equals(currentMember.getId()),
+				incidentLikeReadService.hasUserLiked(currentMember.getId(), incident.getId())
+			))
+			.collect(Collectors.toList());
+
+		return new CursorResponse<>(cursorRequest.next(nextKey), incidentInfoDtos);
+	}
+
+	public CursorResponse<IncidentInfoDto> getIncidents(Long writerId, CursorRequest cursorRequest) {
+		MemberEntity currentMember = memberService.getCurrentMember();
 		var incidents = findAllBy(writerId, cursorRequest);
 		var nextKey = incidents.stream()
 			.mapToLong(IncidentEntity::getId)
 			.min()
 			.orElse(CursorRequest.NONE_KEY);
 
-		return new CursorResponse<>(cursorRequest.next(nextKey), incidents);
+		List<IncidentInfoDto> incidentInfoDtos = incidents.stream()
+			.map(incident -> new IncidentInfoDto(
+				incident,
+				incident.getWriterId().equals(currentMember.getId()),
+				incidentLikeReadService.hasUserLiked(currentMember.getId(), incident.getId())
+			))
+			.collect(Collectors.toList());
+
+		return new CursorResponse<>(cursorRequest.next(nextKey), incidentInfoDtos);
 	}
 
 	private List<IncidentEntity> findAllBy(Long writerId, CursorRequest cursorRequest) {
@@ -64,17 +119,21 @@ public class IncidentReadService {
 	 * bottomRightY: 화면 오른쪽 아래의 위도 (최소 위도)
 	 */
 	// 화면 사각형 영역 내의 게시글 조회
-	public List<IncidentEntity> findIncidentsWithinScreen(
-		double topRightX, double topRightY, // 오른쪽 위 좌표
-		double bottomLeftX, double bottomLeftY // 왼쪽 아래 좌표
+	public List<IncidentInfoDto> findIncidentsWithinScreen(
+		double topRightX, double topRightY,
+		double bottomLeftX, double bottomLeftY
 	) {
+		MemberEntity currentMember = memberService.getCurrentMember();
 		List<IncidentEntity> allIncidents = incidentRepository.findAll()
 			.orElseThrow(IncidentNotFoundException::new);
 		return allIncidents.stream()
-			// 경도: bottomLeftX(최소) ~ topRightX(최대)
 			.filter(incident -> incident.getLongitude() >= bottomLeftX && incident.getLongitude() <= topRightX)
-			// 위도: bottomLeftY(최소) ~ topRightY(최대)
 			.filter(incident -> incident.getLatitude() >= bottomLeftY && incident.getLatitude() <= topRightY)
+			.map(incident -> new IncidentInfoDto(
+				incident,
+				incident.getWriterId().equals(currentMember.getId()),
+				incidentLikeReadService.hasUserLiked(currentMember.getId(), incident.getId())
+			))
 			.collect(Collectors.toList());
 	}
 
@@ -93,12 +152,17 @@ public class IncidentReadService {
 	public List<IncidentDistanceDto> findNearbyIncidents(double pointX, double pointY, double radiusKm) {
 		List<IncidentEntity> allIncidents = incidentRepository.findAll()
 			.orElseThrow(IncidentNotFoundException::new);
+		MemberEntity currentMember = memberService.getCurrentMember();
 
 		return allIncidents.stream()
 			.map(incident -> {
 				double distance = calculateDistance(pointY, pointX,
 					incident.getLongitude(), incident.getLatitude());
-				return new IncidentDistanceDto(incident, distance);
+				return new IncidentDistanceDto(
+					incident,
+					incident.getWriterId().equals(currentMember.getId()),
+					incidentLikeReadService.hasUserLiked(currentMember.getId(), incident.getId()),
+					distance);
 			})
 			.filter(dto -> dto.distance() <= radiusKm)
 			.collect(Collectors.toList());
@@ -116,9 +180,15 @@ public class IncidentReadService {
 	// 	return R * c; // 거리 (km)
 	// }
 
-	public IncidentEntity getIncident(Long incidentId) {
-		return incidentRepository.findById(incidentId)
+	public IncidentInfoDto getIncident(Long incidentId) {
+		MemberEntity currentMember = memberService.getCurrentMember();
+		IncidentEntity incident = incidentRepository.findById(incidentId)
 			.orElseThrow(IncidentNotFoundException::new);
+		return new IncidentInfoDto(
+			incident,
+			incident.getWriterId().equals(currentMember.getId()),
+			incidentLikeReadService.hasUserLiked(currentMember.getId(), incident.getId())
+		);
 	}
 }
 

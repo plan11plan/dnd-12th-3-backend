@@ -24,7 +24,7 @@ public class IncidentLikeBatchScheduler {
 	public static final int REDIS_TTL_DAYS = 1;
 	private static final String LIKE_COUNT_PREFIX = "incident:like_count:";
 	private static final String USER_LIKE_PREFIX = "incident:user_likes:";
-	private static final long BATCH_INTERVAL_MS = 30000;
+	private static final long BATCH_INTERVAL_MS = 5000;
 
 	private final StringRedisTemplate redisTemplate;
 	private final IncidentRepository incidentRepository;

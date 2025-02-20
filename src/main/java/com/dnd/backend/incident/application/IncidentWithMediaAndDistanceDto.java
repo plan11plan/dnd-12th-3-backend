@@ -9,5 +9,7 @@ public record IncidentWithMediaAndDistanceDto(
 	IncidentWriterInfo writer,
 	IncidentEntity incident,
 	String distance,
+	boolean editable, // 추가
+	boolean liked,    // 추가
 	List<MediaFileInfo> mediaFiles) {
 }

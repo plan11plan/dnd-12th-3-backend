@@ -4,9 +4,9 @@ import java.util.List;
 
 import com.dnd.backend.support.util.CursorRequest;
 
-public record IncidentCursorResponse(
+public record IncidentCursorResponse<T>(
 	CursorRequest nextCursorRequest,
-	List<IncidentWithMediaDto> incidents
+	List<T> incidents
 ) {
 
 }

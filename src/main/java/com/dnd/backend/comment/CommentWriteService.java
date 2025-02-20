@@ -1,5 +1,8 @@
 package com.dnd.backend.comment;
 
+import java.util.concurrent.TimeUnit;
+
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -9,7 +12,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CommentWriteService {
 
+	private static final String COMMENT_COUNT_PREFIX = "incident:comment_count:";
+
 	private final CommentRepository commentRepository;
+	private final StringRedisTemplate redisTemplate;
 
 	@Transactional
 	public CommentEntity createComment(Long incidentId, Long writerId, String content) {
@@ -18,7 +24,9 @@ public class CommentWriteService {
 			.writerId(writerId)
 			.content(content)
 			.build();
-		return commentRepository.save(comment);
+		CommentEntity savedComment = commentRepository.save(comment);
+		updateRedisOnCreate(incidentId);
+		return savedComment;
 	}
 
 	@Transactional
@@ -31,7 +39,9 @@ public class CommentWriteService {
 			.content(content)
 			.parent(parent)
 			.build();
-		return commentRepository.save(reply);
+		CommentEntity savedReply = commentRepository.save(reply);
+		updateRedisOnCreate(incidentId);
+		return savedReply;
 	}
 
 	@Transactional
@@ -47,5 +57,18 @@ public class CommentWriteService {
 		CommentEntity comment = commentRepository.findById(commentId)
 			.orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다."));
 		commentRepository.delete(comment);
+		updateRedisOnDelete(comment.getIncidentId());
+	}
+
+	private void updateRedisOnCreate(Long incidentId) {
+		String key = COMMENT_COUNT_PREFIX + incidentId;
+		redisTemplate.opsForValue().increment(key);
+		redisTemplate.expire(key, 1, TimeUnit.DAYS);
+	}
+
+	private void updateRedisOnDelete(Long incidentId) {
+		String key = COMMENT_COUNT_PREFIX + incidentId;
+		redisTemplate.opsForValue().decrement(key);
+		redisTemplate.expire(key, 1, TimeUnit.DAYS);
 	}
 }
