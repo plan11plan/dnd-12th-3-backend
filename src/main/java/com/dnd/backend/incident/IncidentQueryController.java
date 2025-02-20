@@ -14,7 +14,6 @@ import com.dnd.backend.incident.application.GetIncidentsByCursorUseCase;
 import com.dnd.backend.incident.application.GetMostCommentedIncidentsWithinScreenUseCase;
 import com.dnd.backend.incident.application.GetNearestIncidentsWithinScreenUseCase;
 import com.dnd.backend.incident.application.GetNewestIncidentsWithinScreenUseCase;
-import com.dnd.backend.incident.application.IncidentWithMediaAndDistanceDto;
 import com.dnd.backend.incident.application.response.IncidentCursorResponse;
 import com.dnd.backend.incident.dto.IncidentDto;
 import com.dnd.backend.incident.entity.IncidentEntity;
@@ -32,9 +31,9 @@ public class IncidentQueryController {
 	private final GetIncidentsByCursorUseCase getIncidentsByCursorUseCase;
 	private final GetIncidentUsecase getIncidentUsecase;
 	private final IncidentReadService incidentReadService;
-	private final GetNewestIncidentsWithinScreenUseCase getNewestIncidentsUseCase;
-	private final GetMostCommentedIncidentsWithinScreenUseCase getMostCommentedIncidentsUseCase;
-	private final GetNearestIncidentsWithinScreenUseCase getNearestIncidentsUseCase;
+	private final GetNewestIncidentsWithinScreenUseCase getNewestIncidentsWithinScreenUseCase;
+	private final GetMostCommentedIncidentsWithinScreenUseCase getMostCommentedIncidentsWithinScreenUseCase;
+	private final GetNearestIncidentsWithinScreenUseCase getNearestIncidentsWithinScreenUseCase;
 
 	@GetMapping("/test/findAll")
 	public List<IncidentEntity> createIncident() {
@@ -56,29 +55,35 @@ public class IncidentQueryController {
 	}
 
 	@GetMapping("/newest")
-	public List<IncidentWithMediaAndDistanceDto> getNewestIncidentsWithinScreen(
+	public IncidentCursorResponse getNewestIncidentsWithinScreen(
 		@RequestParam double topRightX, @RequestParam double topRightY,
 		@RequestParam double bottomLeftX, @RequestParam double bottomLeftY,
-		@RequestParam double myX, @RequestParam double myY
+		@RequestParam double myX, @RequestParam double myY,
+		@ModelAttribute CursorRequest cursorRequest
 	) {
-		return getNewestIncidentsUseCase.execute(topRightX, topRightY, bottomLeftX, bottomLeftY, myX, myY);
+		return getNewestIncidentsWithinScreenUseCase.execute(topRightX, topRightY, bottomLeftX, bottomLeftY, myX, myY,
+			cursorRequest);
 	}
 
 	@GetMapping("/most-commented")
-	public List<IncidentWithMediaAndDistanceDto> getMostCommentedIncidentsWithinScreen(
+	public IncidentCursorResponse getMostCommentedIncidentsWithinScreen(
 		@RequestParam double topRightX, @RequestParam double topRightY,
 		@RequestParam double bottomLeftX, @RequestParam double bottomLeftY,
-		@RequestParam double myX, @RequestParam double myY
+		@RequestParam double myX, @RequestParam double myY,
+		@ModelAttribute CursorRequest cursorRequest
 	) {
-		return getMostCommentedIncidentsUseCase.execute(topRightX, topRightY, bottomLeftX, bottomLeftY, myX, myY);
+		return getMostCommentedIncidentsWithinScreenUseCase.execute(topRightX, topRightY, bottomLeftX, bottomLeftY, myX,
+			myY, cursorRequest);
 	}
 
 	@GetMapping("/nearest")
-	public List<IncidentWithMediaAndDistanceDto> getNearestIncidentsWithinScreen(
+	public IncidentCursorResponse getNearestIncidentsWithinScreen(
 		@RequestParam double topRightX, @RequestParam double topRightY,
 		@RequestParam double bottomLeftX, @RequestParam double bottomLeftY,
-		@RequestParam double myX, @RequestParam double myY
+		@RequestParam double myX, @RequestParam double myY,
+		@ModelAttribute CursorRequest cursorRequest
 	) {
-		return getNearestIncidentsUseCase.execute(topRightX, topRightY, bottomLeftX, bottomLeftY, myX, myY);
+		return getNearestIncidentsWithinScreenUseCase.execute(topRightX, topRightY, bottomLeftX, bottomLeftY, myX, myY,
+			cursorRequest);
 	}
 }

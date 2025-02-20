@@ -20,10 +20,15 @@ public record IncidentDto(
 	int commentCount,
 	String roadNameAddress,
 	String lotNumberAddress,
+	boolean liked,
+	boolean editable,
 	List<MediaFileInfo> mediaFiles
 ) {
 	// Entity -> DTO 변환을 위한 factory 메서드
-	public static IncidentDto from(IncidentEntity incident, String writerName,
+	public static IncidentDto from(IncidentEntity incident,
+		boolean liked,
+		boolean editable,
+		String writerName,
 		List<MediaFileInfo> mediaFiles) {
 		return new IncidentDto(
 			incident.getId(),
@@ -38,6 +43,8 @@ public record IncidentDto(
 			incident.getCommentCount(),
 			incident.getRoadNameAddress(),
 			incident.getLotNumberAddress(),
+			liked,
+			editable,
 			mediaFiles
 		);
 	}

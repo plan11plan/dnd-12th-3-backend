@@ -6,9 +6,12 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
+import com.dnd.backend.incident.application.response.IncidentCursorResponse;
 import com.dnd.backend.incident.dto.IncidentDistanceDto;
-import com.dnd.backend.incident.entity.IncidentEntity;
+import com.dnd.backend.incident.dto.IncidentInfoDto;
 import com.dnd.backend.incident.service.IncidentReadService;
+import com.dnd.backend.support.util.CursorRequest;
+import com.dnd.backend.support.util.CursorResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,22 +22,29 @@ public class GetNearestIncidentsWithinScreenUseCase {
 	private final IncidentReadService incidentReadService;
 	private final IncidentWithMediaAssembler incidentWithMediaAssembler;
 
-	public List<IncidentWithMediaAndDistanceDto> execute(
-		double topRightX, double topRightY, // 오른쪽 위 좌표
-		double bottomLeftX, double bottomLeftY, // 왼쪽 아래 좌표
-		double myX, double myY // 사용자 위치
+	public IncidentCursorResponse execute(
+		double topRightX, double topRightY,
+		double bottomLeftX, double bottomLeftY,
+		double myX, double myY,
+		CursorRequest cursorRequest
 	) {
-		List<IncidentEntity> incidents = incidentReadService.findIncidentsWithinScreen(
-			topRightX, topRightY, bottomLeftX, bottomLeftY
+		CursorResponse<IncidentInfoDto> incidentCursor = incidentReadService.findIncidentsWithinScreenByCursor(
+			topRightX, topRightY, bottomLeftX, bottomLeftY, cursorRequest
 		);
-		List<IncidentDistanceDto> distanceDtos = incidents.stream()
+
+		List<IncidentDistanceDto> distanceDtos = incidentCursor.contents().stream()
 			.map(incident -> {
 				double distance = incidentReadService.calculateDistance(myY, myX, incident.getLatitude(),
 					incident.getLongitude());
-				return new IncidentDistanceDto(incident, distance);
+				return new IncidentDistanceDto(incident.incidentEntity(), incident.editable(), incident.liked(),
+					distance);
 			})
 			.sorted(Comparator.comparingDouble(IncidentDistanceDto::distance))
 			.collect(Collectors.toList());
-		return incidentWithMediaAssembler.toIncidentWithMediaAndDistanceDtos(distanceDtos);
+
+		List<IncidentWithMediaAndDistanceDto> withMediaList = incidentWithMediaAssembler.toIncidentWithMediaAndDistanceDtos(
+			distanceDtos);
+
+		return new IncidentCursorResponse(incidentCursor.nextCursorRequest(), withMediaList);
 	}
 }

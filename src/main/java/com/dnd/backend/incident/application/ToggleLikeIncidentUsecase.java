@@ -17,8 +17,7 @@ public class ToggleLikeIncidentUsecase {
 
 	public String execute(Long userId, Long incidentId) {
 		var incident = incidentReadService.getIncident(incidentId);
-		var user = memberService.getMember(userId);
-		return incidentLikeWriteService.toggleLike(user.getId(), incident.getId()).toString();
-
+		var member = memberService.getMember(userId);
+		return incidentLikeWriteService.toggleLike(member.getId(), incident.getId()).toString();
 	}
 }

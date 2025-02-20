@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.dnd.backend.incident.dto.IncidentDto;
-import com.dnd.backend.incident.entity.IncidentEntity;
+import com.dnd.backend.incident.dto.IncidentInfoDto;
 import com.dnd.backend.incident.service.IncidentReadService;
 import com.dnd.backend.mediaFile.dto.MediaFileInfo;
 import com.dnd.backend.mediaFile.service.MediaFileReadService;
@@ -21,13 +21,15 @@ public class GetIncidentUsecase {
 	private final MediaFileReadService mediaFileReadService;
 
 	public IncidentDto execute(Long incidentId) {
-		IncidentEntity incident = incidentReadService.getIncident(incidentId);
-		var writerId = incident.getWriterId();
+		IncidentInfoDto incident = incidentReadService.getIncident(incidentId);
+		var writerId = incident.incidentEntity().getWriterId();
 		var writerName = memberService.getMember(writerId).getName();
 		List<MediaFileInfo> mediaFilesByIncidentIds = mediaFileReadService.getMediaFilesByIncidentIds(
 			List.of(incidentId));
 		return IncidentDto.from(
-			incidentReadService.getIncident(incidentId),
+			incidentReadService.getIncident(incidentId).incidentEntity(),
+			incident.liked(),
+			incident.editable(),
 			writerName,
 			mediaFilesByIncidentIds);
 	}

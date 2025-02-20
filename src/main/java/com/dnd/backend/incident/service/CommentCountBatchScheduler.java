@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 public class CommentCountBatchScheduler {
 	private static final String COMMENT_COUNT_PREFIX = "incident:comment_count:";
 	private static final int REDIS_TTL_DAYS = 1;
-	private static final long BATCH_INTERVAL_MS = 30000;
+	private static final long BATCH_INTERVAL_MS = 5000;
 
 	private final StringRedisTemplate redisTemplate;
 	private final IncidentRepository incidentRepository;

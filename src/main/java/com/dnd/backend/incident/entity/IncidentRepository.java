@@ -22,4 +22,16 @@ public interface IncidentRepository {
 
 	void updateCommentCount(Long incidentId, int commentCount);
 
+	Optional<List<IncidentEntity>> findAllWithinScreenAndIdLessThan(
+		double topRightX, double topRightY,
+		double bottomLeftX, double bottomLeftY,
+		Long id, Pageable pageable
+	);
+
+	Optional<List<IncidentEntity>> findAllWithinScreen(
+		double topRightX, double topRightY,
+		double bottomLeftX, double bottomLeftY,
+		Pageable pageable
+	);
 }
+

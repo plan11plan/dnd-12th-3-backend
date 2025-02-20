@@ -60,4 +60,21 @@ public class IncidentRepositoryImpl implements IncidentRepository {
 		incidentJpaRepository.updateCommentCount(incidentId, commentCount);
 	}
 
+	@Override
+	public Optional<List<IncidentEntity>> findAllWithinScreenAndIdLessThan(double topRightX, double topRightY,
+		double bottomLeftX, double bottomLeftY, Long id, Pageable pageable) {
+		var allWithinScreenAndIdLessThan = incidentJpaRepository.findAllWithinScreenAndIdLessThan(
+			topRightX, topRightY, bottomLeftX, bottomLeftY, id, pageable
+		);
+		return Optional.of(allWithinScreenAndIdLessThan);
+	}
+
+	@Override
+	public Optional<List<IncidentEntity>> findAllWithinScreen(double topRightX, double topRightY, double bottomLeftX,
+		double bottomLeftY, Pageable pageable) {
+		var allWithinScreen = incidentJpaRepository.findAllWithinScreen(topRightX, topRightY,
+			bottomLeftX, bottomLeftY, pageable);
+		return Optional.of(allWithinScreen);
+	}
+
 }

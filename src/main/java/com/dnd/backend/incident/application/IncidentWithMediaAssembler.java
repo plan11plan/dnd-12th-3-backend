@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.dnd.backend.incident.application.response.IncidentWithMediaDto;
 import com.dnd.backend.incident.dto.IncidentDistanceDto;
-import com.dnd.backend.incident.entity.IncidentEntity;
+import com.dnd.backend.incident.dto.IncidentInfoDto;
 import com.dnd.backend.mediaFile.dto.MediaFileInfo;
 import com.dnd.backend.mediaFile.service.MediaFileReadService;
 import com.dnd.backend.support.util.DistanceFormatter;
@@ -23,33 +23,42 @@ public class IncidentWithMediaAssembler {
 	private final MediaFileReadService mediaFileReadService;
 	private final MemberService memberService;  // 작성자 정보 조회를 위한 서비스
 
-	public List<IncidentWithMediaDto> toIncidentWithMediaDtos(List<IncidentEntity> incidents) {
-		if (incidents.isEmpty()) {
+	public List<IncidentWithMediaDto> toIncidentWithMediaDtos(List<IncidentInfoDto> incidentInfoDtos) {
+		if (incidentInfoDtos.isEmpty()) {
 			return Collections.emptyList();
 		}
-		var incidentIds = incidents.stream()
-			.map(IncidentEntity::getId)
+
+		// Extract incident IDs and writer IDs
+		var incidentIds = incidentInfoDtos.stream()
+			.map(dto -> dto.incident().getId())
 			.collect(Collectors.toList());
 
-		// 유저 id 모음
-		var writerIds = incidents.stream()
-			.map(IncidentEntity::getWriterId)
+		var writerIds = incidentInfoDtos.stream()
+			.map(dto -> dto.incident().getWriterId())
 			.distinct()
 			.collect(Collectors.toList());
 		var writerMap = memberService.getMembersByIds(writerIds);
 
+		// Fetch media files
 		var allMediaFiles = mediaFileReadService.getMediaFilesByIncidentIds(incidentIds);
 		var mediaFilesGrouped = allMediaFiles.stream()
 			.collect(Collectors.groupingBy(MediaFileInfo::incidentId));
 
-		return incidents.stream()
-			.map(incident -> {
+		// Assemble DTOs
+		return incidentInfoDtos.stream()
+			.map(dto -> {
+				var incident = dto.incident();
 				var writer = writerMap.get(incident.getWriterId());
-				// 작성자 정보가 없을 경우 기본값 설정
 				var writerName = writer != null ? writer.getName() : "Unknown";
 				var writerInfo = new IncidentWriterInfo(writerName);
 				var mediaFiles = mediaFilesGrouped.getOrDefault(incident.getId(), Collections.emptyList());
-				return new IncidentWithMediaDto(writerInfo, incident, mediaFiles);
+				return new IncidentWithMediaDto(
+					writerInfo,
+					incident,
+					dto.editable(), // 추가
+					dto.liked(),   // 추가
+					mediaFiles
+				);
 			})
 			.collect(Collectors.toList());
 	}
@@ -61,10 +70,10 @@ public class IncidentWithMediaAssembler {
 			return Collections.emptyList();
 		}
 
-		// incidentIds와 작성자 id를 추출하여 미디어와 작성자 정보를 배치 조회
+		// Extract incident IDs and writer IDs
 		var incidentIds = incidentDistances.stream()
 			.map(dto -> dto.incident().getId())
-			.toList();
+			.collect(Collectors.toList());
 
 		var writerIds = incidentDistances.stream()
 			.map(dto -> dto.incident().getWriterId())
@@ -72,10 +81,12 @@ public class IncidentWithMediaAssembler {
 			.collect(Collectors.toList());
 		var writerMap = memberService.getMembersByIds(writerIds);
 
+		// Fetch media files
 		var allMediaFiles = mediaFileReadService.getMediaFilesByIncidentIds(incidentIds);
 		var mediaFilesGrouped = allMediaFiles.stream()
 			.collect(Collectors.groupingBy(MediaFileInfo::incidentId));
 
+		// Assemble DTOs
 		return incidentDistances.stream()
 			.map(dto -> {
 				var incident = dto.incident();
@@ -84,8 +95,14 @@ public class IncidentWithMediaAssembler {
 				var writerName = writer != null ? writer.getName() : "Unknown";
 				var writerInfo = new IncidentWriterInfo(writerName);
 				var mediaFiles = mediaFilesGrouped.getOrDefault(incident.getId(), Collections.emptyList());
-				return new IncidentWithMediaAndDistanceDto(writerInfo, incident,
-					DistanceFormatter.formatDistance(distance), mediaFiles);
+				return new IncidentWithMediaAndDistanceDto(
+					writerInfo,
+					incident,
+					DistanceFormatter.formatDistance(distance),
+					dto.editable(), // 추가
+					dto.liked(),    // 추가
+					mediaFiles
+				);
 			})
 			.collect(Collectors.toList());
 	}

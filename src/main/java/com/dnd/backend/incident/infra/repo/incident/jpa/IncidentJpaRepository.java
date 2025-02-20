@@ -35,4 +35,27 @@ public interface IncidentJpaRepository extends JpaRepository<IncidentEntity, Lon
 	@Transactional
 	@Query("UPDATE IncidentEntity i SET i.commentCount = :commentCount WHERE i.id = :incidentId")
 	void updateCommentCount(@Param("incidentId") Long incidentId, @Param("commentCount") int commentCount);
+
+	@Query("SELECT i FROM IncidentEntity i WHERE " +
+		"i.longitude >= :bottomLeftX AND i.longitude <= :topRightX AND " +
+		"i.latitude >= :bottomLeftY AND i.latitude <= :topRightY AND " +
+		"i.id < :id ORDER BY i.id DESC")
+	List<IncidentEntity> findAllWithinScreenAndIdLessThan(
+		@Param("topRightX") double topRightX,
+		@Param("topRightY") double topRightY,
+		@Param("bottomLeftX") double bottomLeftX,
+		@Param("bottomLeftY") double bottomLeftY,
+		@Param("id") Long id,
+		Pageable pageable);
+
+	@Query("SELECT i FROM IncidentEntity i WHERE " +
+		"i.longitude >= :bottomLeftX AND i.longitude <= :topRightX AND " +
+		"i.latitude >= :bottomLeftY AND i.latitude <= :topRightY")
+	List<IncidentEntity> findAllWithinScreen(
+		@Param("topRightX") double topRightX,
+		@Param("topRightY") double topRightY,
+		@Param("bottomLeftX") double bottomLeftX,
+		@Param("bottomLeftY") double bottomLeftY,
+		Pageable pageable);
 }
+
