@@ -22,11 +22,6 @@ public class GetIncidentsByCursorUseCase {
 		CursorResponse<IncidentInfoDto> incidentCursor = incidentReadService.getIncidents(writerId, cursorRequest);
 		var incidentInfoDtos = incidentCursor.contents();
 
-		// Extract IncidentEntity from IncidentInfoDto
-		// var incidents = incidentInfoDtos.stream()
-		// 	.map(IncidentInfoDto::incidentEntity)
-		// 	.collect(Collectors.toList());
-
 		// Assemble IncidentWithMediaDto
 		var withMediaList = incidentWithMediaAssembler.toIncidentWithMediaDtos(incidentInfoDtos);
 
