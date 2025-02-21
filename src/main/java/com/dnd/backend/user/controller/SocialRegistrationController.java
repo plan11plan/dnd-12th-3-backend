@@ -35,4 +35,12 @@ public class SocialRegistrationController {
 		AuthResponse response = socialRegistrationService.handleSocialLogin(request, "kakao");
 		return ResponseEntity.ok(response);
 	}
+
+	// 긴급 소셜 로그인
+	@PostMapping("/token")
+	public ResponseEntity<AuthResponse> emerRegister(@RequestBody SocialLoginRequest request)
+		throws BadRequestException {
+		AuthResponse response = socialRegistrationService.handleSocialLogin(request, "emer");
+		return ResponseEntity.ok(response);
+	}
 }

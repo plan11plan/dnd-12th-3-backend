@@ -28,6 +28,7 @@ public class SocialRegistrationService {
 	private final JwtTokenProvider tokenProvider;
 
 	public AuthResponse handleSocialLogin(SocialLoginRequest request, String provider) {
+
 		SocialAuthStrategy strategy = socialAuthStrategies.get(provider + "AuthStrategy");
 		if (strategy == null) {
 			throw new IllegalArgumentException("Unsupported social login provider: " + provider);
@@ -51,7 +52,7 @@ public class SocialRegistrationService {
 			throw new UnauthorizedException("인증 중 오류가 발생했습니다: " + ex.getMessage());
 		}
 	}
-	
+
 	private AuthResponse generateAuthResponse(Authentication authentication, Long id, String name) {
 		String accessToken = tokenProvider.generateAccessToken(authentication);
 		String idToken = tokenProvider.generateIdToken(authentication);
