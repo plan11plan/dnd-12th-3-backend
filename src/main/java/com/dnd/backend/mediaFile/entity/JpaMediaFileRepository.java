@@ -1,6 +1,7 @@
 package com.dnd.backend.mediaFile.entity;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,4 +15,7 @@ public interface JpaMediaFileRepository extends JpaRepository<MediaFileEntity, L
 
 	@Query("SELECT m FROM MediaFileEntity m WHERE m.incidentId IN :incidentIds")
 	List<MediaFileEntity> findByIncidentIdIn(@Param("incidentIds") List<Long> incidentIds);
+
+	Optional<MediaFileEntity> findByFileUrl(String fileUrl);
+
 }

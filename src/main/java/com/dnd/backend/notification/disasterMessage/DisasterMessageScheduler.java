@@ -14,7 +14,7 @@ public class DisasterMessageScheduler {
 
 	// 매 1분마다 실행 (cron 표현식 예시)
 	// 초 분 시 일 월 요일
-	@Scheduled(cron = "0 */1 * * * *")
+	@Scheduled(cron = "0 */30 * * * *")
 	public void scheduledDisasterFetch() {
 		disasterMessageService.fetchAndSaveDisasterMessagesAndNotify();
 	}

@@ -6,6 +6,7 @@ import java.util.List;
 import com.dnd.backend.incident.entity.IncidentEntity;
 import com.dnd.backend.incident.entity.category.IncidentCategory;
 import com.dnd.backend.mediaFile.dto.MediaFileInfo;
+import com.dnd.backend.support.util.DistanceFormatter;
 
 public record IncidentDto(
 	Long id,
@@ -25,7 +26,7 @@ public record IncidentDto(
 	LocalDateTime createdAt,
 	LocalDateTime updatedAt,
 	List<MediaFileInfo> mediaFiles,
-	double distance  // 추가
+	String distance  // 추가
 ) {
 	// 기존 from() 메서드 오버로드 or 수정
 	public static IncidentDto from(IncidentEntity incident,
@@ -52,7 +53,7 @@ public record IncidentDto(
 			incident.getCreatedAt(),
 			incident.getUpdatedAt(),
 			mediaFiles,
-			distance
+			DistanceFormatter.formatDistance(distance)
 		);
 	}
 }
