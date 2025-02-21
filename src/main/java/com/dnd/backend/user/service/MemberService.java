@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.dnd.backend.support.kakao.KakaoAddressService;
 import com.dnd.backend.user.dto.AddressDTO;
+import com.dnd.backend.user.dto.CreateAddressDTO;
 import com.dnd.backend.user.entity.Address;
 import com.dnd.backend.user.entity.MemberEntity;
 import com.dnd.backend.user.exception.BadRequestException;
@@ -52,16 +53,19 @@ public class MemberService {
 	}
 
 	@Transactional
-	public String addAddress(AddressDTO addressDTO) {
+	public String addAddress(CreateAddressDTO createAddressDTO) {
 		MemberEntity memberEntity = securityService.getAuthenticatedUser();
 		if (memberEntity.getAddresses().size() >= 2) {
 			throw new BadRequestException("Cannot add more than 2 addresses");
 		}
 
 		Address address = Address.builder()
-			.addressName(addressDTO.getAddressName())
-			.latitude(addressDTO.getLatitude())
-			.longitude(addressDTO.getLongitude())
+			.addressName(createAddressDTO.getAddressName())
+			.sido(createAddressDTO.getSido())
+			.sgg(createAddressDTO.getSgg())
+			.emd(createAddressDTO.getEmd())
+			.latitude(createAddressDTO.getLatitude())
+			.longitude(createAddressDTO.getLongitude())
 			.memberEntity(memberEntity)
 			.build();
 
@@ -92,26 +96,18 @@ public class MemberService {
 		return memberEntities;
 	}
 
-	// public List<Address> getMyAddress() {
-	// 	MemberEntity authenticatedUser = securityService.getAuthenticatedUser();
-	// 	return authenticatedUser.getAddresses();
-	// }
 	public List<AddressDTO> getMyAddress() {
 		MemberEntity authenticatedUser = securityService.getAuthenticatedUser();
 		List<Address> addresses = authenticatedUser.getAddresses();
 
 		// Address 엔티티를 AddressDTO로 변환하며, addressName을 동 단위로 변환
 		return addresses.stream()
-			.map(address -> {
-				String dongName = kakaoAddressService.convertCoordinatesToDongName(address.getLatitude(),
-					address.getLongitude());
-				return AddressDTO.builder()
-					.addressId(address.getId())
-					.addressName(dongName) // 동 단위로 변환된 주소명
-					.latitude(address.getLatitude())
-					.longitude(address.getLongitude())
-					.build();
-			})
+			.map(address -> AddressDTO.builder()
+				.addressId(address.getId())
+				.addressName(address.getEmd())
+				.latitude(address.getLatitude())
+				.longitude(address.getLongitude())
+				.build())
 			.collect(Collectors.toList());
 	}
 }

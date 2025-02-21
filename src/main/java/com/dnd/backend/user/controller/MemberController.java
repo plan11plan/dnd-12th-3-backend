@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dnd.backend.user.dto.AddressDTO;
+import com.dnd.backend.user.dto.CreateAddressDTO;
 import com.dnd.backend.user.entity.MemberEntity;
 import com.dnd.backend.user.service.MemberService;
 
@@ -45,8 +45,8 @@ public class MemberController {
 	}
 
 	@PostMapping("/address")
-	public ResponseEntity<?> addAddress(@RequestBody AddressDTO addressDTO) {
-		String message = userService.addAddress(addressDTO);
+	public ResponseEntity<?> addAddress(@RequestBody CreateAddressDTO createAddressDTO) {
+		String message = userService.addAddress(createAddressDTO);
 		return ResponseEntity.ok(message);
 	}
 

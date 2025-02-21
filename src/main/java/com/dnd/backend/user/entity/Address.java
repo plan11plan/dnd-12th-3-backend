@@ -30,8 +30,21 @@ public class Address {
 	private double latitude;
 	private double longitude;
 
+	private String sido;
+	private String sgg;
+	private String emd;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonBackReference  // JSON 직렬화 시 무시
 	@JoinColumn(name = "member_id")
 	private MemberEntity memberEntity;
+
+	@Override
+	public String toString() {
+		return "Address{" +
+			"sido='" + sido + '\'' +
+			", sgg='" + sgg + '\'' +
+			", emd='" + emd + '\'' +
+			'}';
+	}
 }

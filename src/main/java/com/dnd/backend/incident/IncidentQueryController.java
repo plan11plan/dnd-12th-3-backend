@@ -42,8 +42,12 @@ public class IncidentQueryController {
 
 	@GetMapping("/{incidentId}")
 	public IncidentDto getIncident(
-		@PathVariable("incidentId") Long incidentId) {
-		return getIncidentUsecase.execute(incidentId);
+		@PathVariable("incidentId") Long incidentId,
+		@RequestParam(required = false) Double myX,  // nullable
+		@RequestParam(required = false) Double myY
+	) {
+		// myX, myY가 null일 수 있으니 예외처리/기본값 처리하거나, 필수 파라미터면 (required=true)로 선언
+		return getIncidentUsecase.execute(incidentId, myX, myY);
 	}
 
 	@GetMapping("/my")

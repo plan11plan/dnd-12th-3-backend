@@ -1,16 +1,17 @@
 package com.dnd.backend.incident.dto;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.dnd.backend.incident.entity.IncidentEntity;
 import com.dnd.backend.incident.entity.category.IncidentCategory;
 import com.dnd.backend.mediaFile.dto.MediaFileInfo;
+import com.dnd.backend.support.util.DistanceFormatter;
 
 public record IncidentDto(
 	Long id,
 	Long writerId,
 	String writerName,
-
 	String description,
 	IncidentCategory incidentCategory,
 	double latitude,
@@ -22,14 +23,18 @@ public record IncidentDto(
 	String lotNumberAddress,
 	boolean liked,
 	boolean editable,
-	List<MediaFileInfo> mediaFiles
+	LocalDateTime createdAt,
+	LocalDateTime updatedAt,
+	List<MediaFileInfo> mediaFiles,
+	String distance  // 추가
 ) {
-	// Entity -> DTO 변환을 위한 factory 메서드
+	// 기존 from() 메서드 오버로드 or 수정
 	public static IncidentDto from(IncidentEntity incident,
 		boolean liked,
 		boolean editable,
 		String writerName,
-		List<MediaFileInfo> mediaFiles) {
+		List<MediaFileInfo> mediaFiles,
+		double distance) {
 		return new IncidentDto(
 			incident.getId(),
 			incident.getWriterId(),
@@ -45,7 +50,10 @@ public record IncidentDto(
 			incident.getLotNumberAddress(),
 			liked,
 			editable,
-			mediaFiles
+			incident.getCreatedAt(),
+			incident.getUpdatedAt(),
+			mediaFiles,
+			DistanceFormatter.formatDistance(distance)
 		);
 	}
 }

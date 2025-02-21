@@ -39,4 +39,11 @@ public class MediaFileEntity extends BaseTimeEntity {
 	private String fileUrl;
 
 	private String originalFilename;
+
+	// 파일 수정 시 사용
+	public void updateFile(String newFileUrl, String newOriginalFilename, MediaType newMediaType) {
+		this.fileUrl = newFileUrl;
+		this.originalFilename = newOriginalFilename;
+		this.fileType = newMediaType;
+	}
 }
